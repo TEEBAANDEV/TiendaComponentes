@@ -3,6 +3,7 @@ package com.example.ventas.client;
 
 import com.example.ventas.model.ProductoDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -11,10 +12,14 @@ import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
 @Service
-@RequiredArgsConstructor
 public class ProductoClient {
 
+
     private final WebClient webClient;
+
+    public ProductoClient(@Qualifier("productoWebClient") WebClient webClient){
+        this.webClient = webClient;
+    }
 
     public Mono<ProductoDTO> obtenerProducto(Long id){
         return webClient.get()
