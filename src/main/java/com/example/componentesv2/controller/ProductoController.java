@@ -26,7 +26,7 @@ public class ProductoController {
     }
 
     @GetMapping("/{id}")
-    public Optional<ResponseEntity<Producto>> findById(@PathVariable Long id){
-        return Optional.of(service.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build()));
+    public ResponseEntity<Producto> findById(@PathVariable Long id){
+        return service.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 }
