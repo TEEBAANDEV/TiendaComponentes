@@ -25,10 +25,8 @@ public class InventarioController {
 
     @PostMapping
     public Mono<ResponseEntity<Inventario>> crearInventario(@RequestBody Inventario inventario){
-        System.out.println(inventario);
         return productoClient.obtenerProducto(inventario.getIdProducto())
                 .map(producto -> {
-                    System.out.println(producto);
                     Inventario guardado = service.save(inventario);
                     return ResponseEntity.status(HttpStatus.CREATED).body(guardado);
                 });
