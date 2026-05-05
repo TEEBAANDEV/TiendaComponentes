@@ -65,3 +65,4 @@ cd tiendacomponentes/carrito
 | Usuario    | 9092             | `/api/v1/auth`,`/api/v1/users`,`/api/v1/auth/login` |
 | Carrito    | 9093             | `/api/carrito`                                      |
 | Ventas     | 9094             | `En progreso`                                       |
+| Envios | 9096 | `/api/v1/envio` |
