@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS evento_analitica(
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    tipo_evento VARCHAR(50) NOT NULL,
+    valor DOUBLE,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
