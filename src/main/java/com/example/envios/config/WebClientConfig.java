@@ -10,6 +10,8 @@ public class WebClientConfig {
 
 @Bean
     public WebClient webClient(){
-    return WebClient.builder().baseUrl("https://localhost:9090/api/v1/envios").build();
+
+        return WebClient.builder()
+                .baseUrl("https://localhost:9090/api/v1/envios").build();
 }
 }
