@@ -5,7 +5,7 @@ Este repositorio centraliza la integración de los microservicios para la plataf
 Actualmente el proyecto se encuentra en una fase media de integración.
 
 **Progreso General:**
-![Progress](https://geps.dev/progress/40?dangerColor=ff4b2b&warningColor=ffa000&successColor=2ecc71)
+![Progress](https://geps.dev/progress/42?dangerColor=ff4b2b&warningColor=ffa000&successColor=2ecc71)
 
 ## 🚀 Arquitectura del Sistema
 
@@ -65,4 +65,4 @@ cd tiendacomponentes/carrito
 | Usuario    | 9092             | `/api/v1/auth`,`/api/v1/users`,`/api/v1/auth/login` |
 | Carrito    | 9093             | `/api/carrito`                                      |
 | Ventas     | 9094             | `En progreso`                                       |
-| Envios | 9096 | `/api/v1/envio` |
+| Envios | 9096 | `En progreso`                                       |
