@@ -18,6 +18,9 @@ El proyecto se compone de los siguientes microservicios. Haz clic en cada uno pa
 * **📦 [TiendaComponentes-Inventario](https://github.com/TEEBAANDEV/TiendaComponentes/tree/Inventario):** Control de stock físico y disponibilidad.
 * **🚚 [TiendaComponentes-Envio](https://github.com/TEEBAANDEV/TiendaComponentes/tree/Envio):** Gestión logística y seguimiento de despachos.
 * **📄 [TiendaComponentes-Recibo](https://github.com/TEEBAANDEV/TiendaComponentes/tree/Recibo):** Generación de comprobantes y documentos tributarios.
+* **📜 [TiendaComponentes-Reportes](https://github.com/TEEBAANDEV/TiendaComponentes/tree/Reportes):** a la noche lo veo
+* **📈[TiendaComponentes-Analiticas](https://github.com/TEEBAANDEV/TiendaComponentes/tree/Analitica):** a la noche lo veo x2
+* **💵 [TiendaComponentes-Pagos](https://github.com/TEEBAANDEV/TiendaComponentes/tree/Pagos):** a la noche lo veo x3
 
 ## 🛠️ Tecnologías Utilizadas
 
