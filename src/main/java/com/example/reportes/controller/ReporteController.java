@@ -14,9 +14,6 @@ import reactor.core.publisher.Mono;
 public class ReporteController {
     private final ReporteService service;
 
-    public ReporteController(ReporteService service) {
-        this.service = service;
-    }
     @GetMapping
     public Flux<Reporte> listar(){
         return service.findAll();

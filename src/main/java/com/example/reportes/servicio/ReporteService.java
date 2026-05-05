@@ -13,9 +13,6 @@ import reactor.core.scheduler.Schedulers;
 public class ReporteService {
     private final ReporteRepository repository;
 
-    public ReporteService(ReporteRepository repository) {
-        this.repository = repository;
-    }
 
     public Flux<Reporte> findAll() {
         return Mono.fromCallable(repository::findAll)

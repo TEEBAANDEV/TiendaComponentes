@@ -12,9 +12,6 @@ public class AnaliticaClientService {
 
     private final WebClient webClient;
 
-    public AnaliticaClientService(WebClient webClient) {
-        this.webClient = webClient;
-    }
 
     public Mono<Void> registrarEvento(String tipo, Double valor, String metadata) {
         EventoAnaliticaDTO evento = new EventoAnaliticaDTO(tipo, valor);

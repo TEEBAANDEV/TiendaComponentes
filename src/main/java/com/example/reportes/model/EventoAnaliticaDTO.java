@@ -11,9 +11,4 @@ public class EventoAnaliticaDTO {
     private String tipoEvento;
     private Double valor;
 
-    public EventoAnaliticaDTO(String tipo, Double valor) {
-    }
-
-    public Object getValor() {
-    }
 }
