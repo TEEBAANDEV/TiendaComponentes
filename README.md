@@ -49,17 +49,12 @@ Antes de ejecutar el proyecto, asegúrate de tener instalado:
 2.  **Configurar variables de entorno:**
     Cada microservicio contiene un archivo `application.properties`. Asegúrate de actualizar las credenciales de la base de datos y las URLs de los servicios relacionados.
 
-3.  **Ejecución:**
-    Inicia los servicios de manera secuencial (se recomienda iniciar primero Usuario y Producto).
-    ```bash
-    mvn spring-boot:run
-    ```
-
 ## 📡 Endpoints Principales (Resumen)
 
-| Servicio | Puerto (Defecto) | Funcionalidad Clave |
-| :--- | :--- | :--- |
-| Auth / Users | 8081 | `/api/auth/login`, `/api/users` |
-| Productos | 8082 | `/api/productos` |
-| Carrito | 8083 | `/api/carrito/{userId}` |
-| Ventas | 8084 | `/api/ventas/procesar` |
+| Servicio   | Puerto (Defecto) | Funcionalidad Clave                                 |
+|:-----------|:-----------------|:----------------------------------------------------|
+ | Producto   | 9090             | `api/v1/productos`                                  |                
+| Inventario | 9091             | `/api/v1/inventario`                                |
+| Usuario    | 9092             | `/api/v1/auth`,`/api/v1/users`,`/api/v1/auth/login` |
+| Carrito    | 9093             | `/api/carrito`                                      |
+| Ventas     | 9094             | `En progreso`                                       |
