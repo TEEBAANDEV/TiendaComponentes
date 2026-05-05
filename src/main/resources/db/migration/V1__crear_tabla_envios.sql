@@ -1,3 +1,9 @@
-CREATE TABLE recibo(
--- PONER DATOS
+CREATE TABLE envio(
+   id BIGINT AUTO_INCREMENT PRIMARY KEY,
+   idVenta BIGINT NOT NULL,
+   idUsuario BIGINT NOT NULL,
+   direccion_destino VARCHAR(255) NOT NULL,
+   estado_envio VARCHAR(50) DEFAULT 'PENDIENTE',
+   codigo_seguimiento VARCHAR(100) UNIQUE,
+   fecha_despacho TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
