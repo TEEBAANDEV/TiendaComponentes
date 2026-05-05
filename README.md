@@ -1,9 +1,1 @@
-🛒 Tienda de Componentes - Arquitectura de MicroserviciosEste repositorio centraliza el desarrollo del sistema Tienda de Componentes. Para mantener la modularidad y facilitar el despliegue independiente, el código fuente ha sido segregado en ramas específicas para cada microservicio.  
-🗺️ Mapa de Ramas y MicroserviciosA continuación, se detallan las ramas disponibles y la responsabilidad de cada servicio:
-👤 Gestión de UsuariosRama: TiendaComponentes-UsuarioDescripción: Servicio encargado del registro, gestión de perfiles y seguridad.  Características: Implementa JwtAuthFilter y JwtService para la autenticación basada en tokens.  
-📦 Catálogo de ProductosRama: TiendaComponentes-ProductoDescripción: Gestiona el inventario maestro de componentes disponibles.  Características: Incluye migraciones de base de datos para la carga inicial de productos (V2__agregar_productos.sql).  
-🛒 Carrito de ComprasRama: TiendaComponentes-CarritoDescripción: Maneja la persistencia temporal de productos seleccionados por los clientes.  Características: Utiliza WebClient para comunicarse con los servicios de Producto y Usuario.  
-📉 Control de InventarioRama: TiendaComponentes-InventarioDescripción: Supervisa el stock físico y las actualizaciones de existencias tras las operaciones.  Características: Contiene controladores específicos para la lógica de inventario y comunicación síncrona.  
-💰 Gestión de VentasRama: TiendaComponentes-VentasDescripción: Orquestador del proceso de finalización de compra.  Características: Integra datos de CarritoDTO y ProductoDTO para generar registros de transacciones.  
-🧾 Servicio de Recibos y EnvíosRama: TiendaComponentes-Recibo: Generación de comprobantes de pago y facturación legal.  Rama: TiendaComponentes-Envio: Gestión de logística y despacho de los pedidos confirmados.  
-🛠️ Tecnologías ComunesTodos los microservicios comparten el siguiente stack tecnológico:Core: Java 17+ con Spring Boot.  Persistencia: Spring Data JPA y migraciones con Flyway.  Comunicación: Spring WebFlux (WebClient) para peticiones inter-servicio.  Gestión de Dependencias: Maven.  
+
