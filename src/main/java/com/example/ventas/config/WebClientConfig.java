@@ -10,6 +10,6 @@ public class WebClientConfig {
 
     @Bean(name = "productoWebClient")
     public WebClient webClient(){
-        return WebClient.builder().baseUrl("http://localhost:9090/api/v1/Productos").build();
+        return WebClient.builder().baseUrl("http://localhost:9090/api/v1/productos").build();
     }
 }
