@@ -51,4 +51,10 @@ public class InventarioCliController {
         service.eliminarDelCarrito(id);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/usuario/{idUsuario}")
+    public ResponseEntity<Void> vaciarCarrito(@PathVariable Long idUsuario){
+        service.vaciarCarritoPorUsuario(idUsuario);
+        return ResponseEntity.noContent().build();
+    }
 }
