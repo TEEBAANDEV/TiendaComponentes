@@ -73,3 +73,4 @@ cd tiendacomponentes/carrito
 | Analitica  | 9097             | `En progreso`                                               |  
 | Reportes   | 9098             | `En progreso`                                               |  
 | Pagos      | 9099             | `En progreso`                                               |  
+Este proyecto es de carácter educativo y privado. No se otorga permiso para su uso o distribución
