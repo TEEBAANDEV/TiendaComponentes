@@ -67,9 +67,9 @@ cd tiendacomponentes/carrito
 | Inventario | 9091             | `/api/v1/inventario`                                |
 | Usuario    | 9092             | `/api/v1/auth`,`/api/v1/users`,`/api/v1/auth/login` |
 | Carrito    | 9093             | `/api/carrito`                                      |
-| Ventas     | 9094             | `En progreso`                                       |
-| Recibo     | 9095             | `En progreso`    |  
-| Envios     | 9096             | `En progreso`    |  
-| Analitica  | 9097             | `En progreso`    |  
-| Reportes   | 9098             | `En progreso`    |  
-| Pagos      | 9099             | `En progreso`    |  
+| Ventas     | 9094             | `/api/v1/ventas`,`/api/v1/ventas/comprar`           |
+| Recibo     | 9095             | `En progreso`                                       |  
+| Envios     | 9096             | `En progreso`                                       |  
+| Analitica  | 9097             | `En progreso`                                       |  
+| Reportes   | 9098             | `En progreso`                                       |  
+| Pagos      | 9099             | `En progreso`                                       |  
