@@ -25,4 +25,11 @@ public class CarritoClient {
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<CarritoDTO>>() {});
     }
+
+    public Mono<Void> vaciarCarrito(Long idUsuario){
+        return webClient.delete()
+                .uri("/usuario/{idUsuario}", idUsuario)
+                .retrieve()
+                .bodyToMono(Void.class);
+    }
 }
