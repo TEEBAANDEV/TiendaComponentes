@@ -27,7 +27,8 @@ public class InventarioCliService {
      }
 
      public void vaciarCarritoPorUsuario(Long idUsuario){
-         repository.deleteByIdUsuario(idUsuario);
+         List<Inventario_cliente> items = repository.findByIdUsuario(idUsuario);
+         repository.deleteAll(items);
      }
 
      public List<Inventario_cliente> listar(){
