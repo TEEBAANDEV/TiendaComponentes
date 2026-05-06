@@ -5,7 +5,7 @@ Este repositorio centraliza la integración de los microservicios para la plataf
 Actualmente el proyecto se encuentra en una fase media de integración.
 
 **Progreso General:**
-![Progress](https://geps.dev/progress/45?dangerColor=ff4b2b&warningColor=ffa000&successColor=2ecc71)
+![Progress](https://geps.dev/progress/55?dangerColor=ff4b2b&warningColor=ffa000&successColor=2ecc71)
 
 ## 🚀 Arquitectura del Sistema
 
