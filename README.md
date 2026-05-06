@@ -67,8 +67,8 @@ cd tiendacomponentes/carrito
 | Inventario | 9091             | `/api/v1/inventario`                                        |
 | Usuario    | 9092             | `/api/v1/auth`,`/api/v1/auth/register`,`/api/v1/auth/login` |
 | Carrito    | 9093             | `/api/carrito`                                              |
-| Ventas     | 9094             | `/api/v1/ventas`,`/api/v1/ventas/comprar`                   |
-| Recibo     | 9095             | `/api/v1/recibo`,`/api/v1/recibo/generar`                   |  
+| Ventas     | 9094             | `/api/v1/ventas`,`/api/v1/ventas/comprar/{idCarrito}`       |
+| Recibo     | 9095             | `/api/v1/recibo`,`/api/v1/recibo/generar/{idVenta}`         |  
 | Envios     | 9096             | `En progreso`                                               |  
 | Analitica  | 9097             | `En progreso`                                               |  
 | Reportes   | 9098             | `En progreso`                                               |  
