@@ -5,8 +5,37 @@ Este repositorio centraliza la integración de los microservicios para la plataf
 Actualmente el proyecto se encuentra en una fase media de integración.
 
 **Progreso General:**
-![Progress](https://geps.dev/progress/55?dangerColor=ff4b2b&warningColor=ffa000&successColor=2ecc71)
+![Progress](https://geps.dev/progress/60?dangerColor=ff4b2b&warningColor=ffa000&successColor=2ecc71)
 
+**Producto:**
+![Progress](https://geps.dev/progress/100?dangerColor=ff4b2b&warningColor=ffa000&successColor=2ecc71)
+
+**Usuario:**
+![Progress](https://geps.dev/progress/100?dangerColor=ff4b2b&warningColor=ffa000&successColor=2ecc71)
+
+**Inventario:**
+![Progress](https://geps.dev/progress/100?dangerColor=ff4b2b&warningColor=ffa000&successColor=2ecc71)
+
+**Carrito:**
+![Progress](https://geps.dev/progress/100?dangerColor=ff4b2b&warningColor=ffa000&successColor=2ecc71)
+
+**Ventas:**
+![Progress](https://geps.dev/progress/100?dangerColor=ff4b2b&warningColor=ffa000&successColor=2ecc71)
+
+**Recibo:**
+![Progress](https://geps.dev/progress/100?dangerColor=ff4b2b&warningColor=ffa000&successColor=2ecc71)
+
+**Reportes:**
+![Progress](https://geps.dev/progress/40?dangerColor=ff4b2b&warningColor=ffa000&successColor=2ecc71)
+
+**Analiticas:**
+![Progress](https://geps.dev/progress/40?dangerColor=ff4b2b&warningColor=ffa000&successColor=2ecc71)
+
+**Envios:**
+![Progress](https://geps.dev/progress/30?dangerColor=ff4b2b&warningColor=ffa000&successColor=2ecc71)
+
+**Pagos:**
+![Progress](https://geps.dev/progress/0?dangerColor=ff4b2b&warningColor=ffa000&successColor=2ecc71)
 ## 🚀 Arquitectura del Sistema
 
 El proyecto se compone de los siguientes microservicios. Haz clic en cada uno para acceder a su rama correspondiente:
