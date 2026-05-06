@@ -21,4 +21,12 @@ public class InventarioService {
      public List<Inventario> listar(){
          return repository.findAll();
      }
+
+     public void descontarStock(Long idProducto, int cantidadComprada){
+         repository.findByIdProducto(idProducto).ifPresent(inventario -> {
+             int nuevoStock = inventario.getCantidad() - cantidadComprada;
+             inventario.setCantidad(Math.max(nuevoStock,0));
+             repository.save(inventario);
+         });
+     }
 }

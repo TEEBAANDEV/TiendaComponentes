@@ -36,4 +36,10 @@ public class InventarioController {
     public List<Inventario> listar(){
         return service.listar();
     }
+
+    @PutMapping("/descontar")
+    public ResponseEntity<Void> descontarStock(@RequestParam Long idProducto, @RequestParam int cantidad){
+        service.descontarStock(idProducto, cantidad);
+        return ResponseEntity.ok().build();
+    }
 }
