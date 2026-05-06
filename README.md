@@ -104,5 +104,3 @@ cd tiendacomponentes/carrito
 | Pagos      | 9099             | `En progreso`                                               |  
 
 ***Este proyecto es de carácter educativo y privado. No se otorga permiso para su uso o distribución***
-
-# nose
