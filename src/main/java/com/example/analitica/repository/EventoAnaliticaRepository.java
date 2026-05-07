@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface EventoAnaliticaRepository extends JpaRepository<EventoAnaliticaRepository, Long> {
+public interface EventoAnaliticaRepository extends JpaRepository<EventoAnalitica, Long> {
     List<EventoAnalitica> findByTipoEvento(String tipoEvento);
     long countByTipoEvento(String tipoEvento);
 }

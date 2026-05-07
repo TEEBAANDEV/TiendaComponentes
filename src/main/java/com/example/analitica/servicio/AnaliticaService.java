@@ -9,7 +9,6 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 @Service
-@RequiredArgsConstructor
 public class AnaliticaService {
     private final EventoAnaliticaRepository repository;
 
