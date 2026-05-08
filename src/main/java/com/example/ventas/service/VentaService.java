@@ -7,6 +7,7 @@ import com.example.ventas.client.ProductoClient;
 import com.example.ventas.client.UserClient;
 import com.example.ventas.model.CarritoDTO;
 import com.example.ventas.model.DetalleVenta;
+import com.example.ventas.model.ProductoDTO;
 import com.example.ventas.model.Venta;
 import com.example.ventas.respository.VentaRepository;
 import lombok.RequiredArgsConstructor;
@@ -44,24 +45,25 @@ public class VentaService {
                     }
                     return Flux.fromIterable(items)
                             .flatMap(item -> productoClient.obtenerProducto(item.getIdProducto())
-                                    .map(productoDTO -> productoDTO.getPrecio() * item.getCantidad())
-                            )
-                            .reduce(0.0, Double::sum)
-                            .flatMap(totalCalculado -> {
-                                List<DetalleVenta> detalles = items.stream()
-                                        .map(item -> {
-                                            DetalleVenta d = new DetalleVenta();
-                                            d.setNombreProducto(item.getNombreProducto());
-                                            d.setCantidad(item.getCantidad());
-                                            d.setDescripcion(item.getDescripcionProducto());
-                                            return d;
-                            }).collect(Collectors.toList());
+                                    .map(productoDTO -> {
+                                        DetalleVenta detalle = new DetalleVenta();
+                                        detalle.setNombreProducto(item.getNombreProducto());
+                                        detalle.setDescripcion(productoDTO.getDescripcion());
+                                        detalle.setCantidad(item.getCantidad());
+                                        detalle.setPrecioUnitario(productoDTO.getPrecio());
+                                        return detalle;
+                                    })
+                            ).collectList()
+                            .flatMap(detallesCompletos -> {
+                                Double totalCalculado = detallesCompletos.stream()
+                                        .mapToDouble(d -> d.getPrecioUnitario() * d.getCantidad())
+                                        .sum();
                                 Venta venta = Venta.builder()
                                         .idUsuario(idUsuario)
                                         .total(totalCalculado)
                                         .fecha(LocalDateTime.now())
                                         .estado("PAGADA")
-                                        .detalles(detalles)
+                                        .detalles(detallesCompletos)
                                         .build();
                                 Venta ventaGuardada = repository.save(venta);
                                 return Flux.fromIterable(items)
