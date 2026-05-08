@@ -21,4 +21,14 @@ public class ProductoService {
     public Optional<Producto> findById(Long id){
         return repository.findById(id);
     }
+
+    public Producto agregarProducto(Producto producto){
+        return repository.save(producto);
+    }
+
+    public void eliminarProducto(Long id){
+        if (repository.existsById(id)){
+            repository.deleteById(id);
+        }
+    }
 }
