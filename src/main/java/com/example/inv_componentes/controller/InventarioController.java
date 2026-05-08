@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -27,14 +28,26 @@ public class InventarioController {
     public Mono<ResponseEntity<Inventario>> crearInventario(@RequestBody Inventario inventario){
         return productoClient.obtenerProducto(inventario.getIdProducto())
                 .map(producto -> {
+                    inventario.setNombreProducto(producto.getNombre());
+                    inventario.setDescripcion(producto.getDescripcion());
                     Inventario guardado = service.save(inventario);
                     return ResponseEntity.status(HttpStatus.CREATED).body(guardado);
-                });
+                })
+                .onErrorResume(e -> Mono.just(ResponseEntity.status(HttpStatus.NOT_FOUND).build()));
     }
 
     @GetMapping
-    public List<Inventario> listar(){
-        return service.listar();
+    public Flux<Inventario> listar(){
+        List<Inventario> listaInventario = service.listar();
+        return Flux.fromIterable(listaInventario)
+                .flatMap(item -> productoClient.obtenerProducto(item.getIdProducto())
+                        .map(producto -> {
+                            item.setNombreProducto(producto.getNombre());
+                            item.setDescripcion(producto.getDescripcion());
+                            return item;
+                        })
+                        .defaultIfEmpty(item)
+                );
     }
 
     @PutMapping("/descontar")
