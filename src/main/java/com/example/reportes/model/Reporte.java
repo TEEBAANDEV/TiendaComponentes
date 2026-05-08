@@ -20,6 +20,9 @@ public class Reporte {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "id_Recibo")
+    private Long idRecibo;
+
     @Column(nullable = false, length = 100)
     private String nombre;
 

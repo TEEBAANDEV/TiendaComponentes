@@ -1,18 +1,24 @@
 package com.example.reportes.controller;
 
+import com.example.reportes.client.ReciboClient;
 import com.example.reportes.model.Reporte;
 import com.example.reportes.servicio.ReporteService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 @RestController
-@RequestMapping("/api/reportes")
+@RequestMapping("/api/v1/reportes")
 @RequiredArgsConstructor
 public class ReporteController {
+    @Autowired
     private final ReporteService service;
+    private final ReciboClient reciboClient;
 
     @GetMapping
     public Flux<Reporte> listar(){
@@ -24,10 +30,25 @@ public class ReporteController {
         return service.findById(id);
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Mono<Reporte> crear(@RequestBody Reporte reporte) {
-        return service.save(reporte);
+    @PostMapping("/generar/{idRecibo}")
+    public Mono<ResponseEntity<Reporte>> crearReporte(@PathVariable Long idRecibo){
+        return reciboClient.obtenerRecibo(idRecibo)
+                .publishOn(Schedulers.boundedElastic())
+                .flatMap(recibo -> {
+                    Reporte nuevoReporte = Reporte.builder()
+                            .idRecibo(recibo.getIdRecibo())
+                            .nombre("Reporte de Venta - Recibo #" + recibo.getIdRecibo())
+                            .descripcion("Venta del usuario " + recibo.getIdUsuario() + ", Detalle: " + recibo.getNombreProducto())
+                            .tipoReporte("Venta_Cliente")
+                            .estado("ACTIVO")
+                            .build();
+                    return service.save(nuevoReporte)
+                            .map(guardado -> ResponseEntity.status(HttpStatus.CREATED).body(guardado));
+                })
+                .onErrorResume(e -> {
+                    System.out.println("Error generando reporte: " + e.getMessage());
+                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+                });
     }
 
     @DeleteMapping("/{id}")

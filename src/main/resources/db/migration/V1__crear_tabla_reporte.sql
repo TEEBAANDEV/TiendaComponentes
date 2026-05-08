@@ -1,5 +1,6 @@
-CREATE TABLE IF NOT EXISTS reporte (
+CREATE TABLE reporte (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id_Recibo BIGINT NOT NULL ,
     nombre VARCHAR(100) NOT NULL,
     descripcion TEXT,
     tipo_reporte VARCHAR(50),
