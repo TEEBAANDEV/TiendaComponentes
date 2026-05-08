@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -23,6 +24,10 @@ public class Venta {
 
     @Column(name = "id_usuario",nullable = false)
     private Long idUsuario;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "venta_id", nullable = false)
+    private List<DetalleVenta> detalles;
 
     @Column(nullable = false)
     private Double total;
