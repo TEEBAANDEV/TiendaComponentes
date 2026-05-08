@@ -30,7 +30,7 @@ public class Venta {
     private List<DetalleVenta> detalles;
 
     @Column(nullable = false)
-    private Double total;
+    private Double total; //cambio de emergencia supongo
 
     @Column(nullable = false)
     private LocalDateTime fecha;

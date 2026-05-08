@@ -60,7 +60,7 @@ public class VentaService {
                                         .sum();
                                 Venta venta = Venta.builder()
                                         .idUsuario(idUsuario)
-                                        .total(totalCalculado)
+                                        .total(totalCalculado) //cambio de emergencia supongo
                                         .fecha(LocalDateTime.now())
                                         .estado("PENDIENTE")
                                         .detalles(detallesCompletos)
