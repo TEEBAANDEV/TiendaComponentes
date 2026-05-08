@@ -6,6 +6,7 @@ import com.example.ventas.client.InventarioClient;
 import com.example.ventas.client.ProductoClient;
 import com.example.ventas.client.UserClient;
 import com.example.ventas.model.CarritoDTO;
+import com.example.ventas.model.DetalleVenta;
 import com.example.ventas.model.Venta;
 import com.example.ventas.respository.VentaRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -46,11 +48,20 @@ public class VentaService {
                             )
                             .reduce(0.0, Double::sum)
                             .flatMap(totalCalculado -> {
+                                List<DetalleVenta> detalles = items.stream()
+                                        .map(item -> {
+                                            DetalleVenta d = new DetalleVenta();
+                                            d.setNombreProducto(item.getNombreProducto());
+                                            d.setCantidad(item.getCantidad());
+                                            d.setDescripcion(item.getDescripcionProducto());
+                                            return d;
+                            }).collect(Collectors.toList());
                                 Venta venta = Venta.builder()
                                         .idUsuario(idUsuario)
                                         .total(totalCalculado)
                                         .fecha(LocalDateTime.now())
                                         .estado("PAGADA")
+                                        .detalles(detalles)
                                         .build();
                                 Venta ventaGuardada = repository.save(venta);
                                 return Flux.fromIterable(items)
