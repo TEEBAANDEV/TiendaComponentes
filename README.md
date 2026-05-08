@@ -26,7 +26,7 @@ Actualmente el proyecto se encuentra en una fase media de integración.
 ![Progress](https://geps.dev/progress/100?dangerColor=ff4b2b&warningColor=ffa000&successColor=2ecc71)
 
 **Reportes:**
-![Progress](https://geps.dev/progress/40?dangerColor=ff4b2b&warningColor=ffa000&successColor=2ecc71)
+![Progress](https://geps.dev/progress/100?dangerColor=ff4b2b&warningColor=ffa000&successColor=2ecc71)
 
 **Analiticas:**
 ![Progress](https://geps.dev/progress/40?dangerColor=ff4b2b&warningColor=ffa000&successColor=2ecc71)
@@ -100,7 +100,7 @@ cd tiendacomponentes/carrito
 | Recibo     | 9095             | `/api/v1/recibo`,`/api/v1/recibo/generar/{idVenta}`         |  
 | Envios     | 9096             | `En progreso`                                               |  
 | Analitica  | 9097             | `En progreso`                                               |  
-| Reportes   | 9098             | `En progreso`                                               |  
+| Reportes   | 9098             | `/api/v1/reportes` `/api/reportes/generar/{idRecibo}`       |  
 | Pagos      | 9099             | `En progreso`                                               |  
 
 ***Este proyecto es de carácter educativo y privado. No se otorga permiso para su uso o distribución***
