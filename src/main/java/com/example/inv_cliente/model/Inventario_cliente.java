@@ -24,6 +24,10 @@ public class Inventario_cliente {
     @Column(nullable = false)
     private Long idProducto;
     @Column(nullable = false)
+    private String nombreProducto;
+    @Column(nullable = false)
+    private String descripcionProducto;
+    @Column(nullable = false)
     private int cantidad;
 
 }
