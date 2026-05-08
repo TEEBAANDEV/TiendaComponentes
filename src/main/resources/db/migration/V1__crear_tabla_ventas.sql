@@ -12,6 +12,6 @@ CREATE TABLE venta_detalles (
     nombre_producto VARCHAR(100) NOT NULL,
     descripcion VARCHAR(255),
     cantidad INT NOT NULL,
-    precio_unitario DOUBLE,
+    precio_unitario DOUBLE NOT NULL ,
     CONSTRAINT fk_venta FOREIGN KEY (venta_id) REFERENCES ventas(id) ON DELETE CASCADE
 );
