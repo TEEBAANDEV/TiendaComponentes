@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ReciboService {
@@ -18,5 +19,8 @@ public class ReciboService {
     }
     public List<Recibo> listar(){
         return repository.findAll();
+    }
+    public Optional<Recibo> obtenerPorId(Long idRecibo){
+        return repository.findById(idRecibo);
     }
 }

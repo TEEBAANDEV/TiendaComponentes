@@ -59,4 +59,11 @@ public class ReciboController {
     public List<Recibo> listarRecibos(){
         return service.listar();
     }
+
+    @GetMapping("/{idRecibo}")
+    public ResponseEntity<Recibo> obtenerPorId(@PathVariable Long idRecibo) {
+        return service.obtenerPorId(idRecibo)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 }
