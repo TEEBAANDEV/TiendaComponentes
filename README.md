@@ -28,11 +28,11 @@ Actualmente el proyecto se encuentra en una fase media de integración.
 **Reportes:**
 ![Progress](https://geps.dev/progress/100?dangerColor=ff4b2b&warningColor=ffa000&successColor=2ecc71)
 
+**Envios:**
+![Progress](https://geps.dev/progress/70?dangerColor=ff4b2b&warningColor=ffa000&successColor=2ecc71)
+
 **Analiticas:**
 ![Progress](https://geps.dev/progress/40?dangerColor=ff4b2b&warningColor=ffa000&successColor=2ecc71)
-
-**Envios:**
-![Progress](https://geps.dev/progress/30?dangerColor=ff4b2b&warningColor=ffa000&successColor=2ecc71)
 
 **Pagos:**
 ![Progress](https://geps.dev/progress/0?dangerColor=ff4b2b&warningColor=ffa000&successColor=2ecc71)
