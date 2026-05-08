@@ -62,7 +62,7 @@ public class VentaService {
                                         .idUsuario(idUsuario)
                                         .total(totalCalculado)
                                         .fecha(LocalDateTime.now())
-                                        .estado("PAGADA")
+                                        .estado("PENDIENTE")
                                         .detalles(detallesCompletos)
                                         .build();
                                 Venta ventaGuardada = repository.save(venta);
