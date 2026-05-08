@@ -2,6 +2,7 @@ package com.example.recibo.controller;
 
 import com.example.recibo.client.ReciboClient;
 import com.example.recibo.client.VentaClient;
+import com.example.recibo.model.DetalleVentaDTO;
 import com.example.recibo.model.Recibo;
 
 import com.example.recibo.service.ReciboService;
@@ -16,6 +17,7 @@ import reactor.core.scheduler.Schedulers;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/recibo")
@@ -36,6 +38,11 @@ public class ReciboController {
                     Recibo nuevoRecibo = new Recibo();
                     nuevoRecibo.setIdVenta(venta.getId());
                     nuevoRecibo.setIdUsuario(venta.getIdUsuario());
+                    String glosaCompleta = venta.getDetalles().stream()
+                            .map(d -> d.getCantidad() + "x " + d.getNombreProducto() + " (" + d.getDescripcion() + ")")
+                            .collect(Collectors.joining(" | "));
+
+                    nuevoRecibo.setNombreProducto(glosaCompleta);
                     nuevoRecibo.setMontoTotal(venta.getTotal());
                     nuevoRecibo.setMetodoPago("TARJETA");
                     nuevoRecibo.setFechaEmision(venta.getFecha());

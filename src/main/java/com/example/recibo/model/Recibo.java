@@ -21,6 +21,8 @@ public class Recibo {
     private Long idVenta;
     @Column(name = "idUsuario")
     private Long idUsuario;
+    @Column(name = "nombreProducto")
+    private String nombreProducto;
     @Column(name = "montoTotal")
     private Double montoTotal;
     @Column(name = "metodoPago")
