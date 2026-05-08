@@ -4,12 +4,14 @@ package com.example.inv_cliente.controller;
 import com.example.inv_cliente.client.ProductoClient;
 import com.example.inv_cliente.client.UsuarioClient;
 import com.example.inv_cliente.model.Inventario_cliente;
+import com.example.inv_cliente.model.Producto;
 import com.example.inv_cliente.service.InventarioCliService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -26,14 +28,21 @@ public class InventarioCliController {
     @Autowired
     private final UsuarioClient usuarioClient;
 
-    @PostMapping
-    public Mono<ResponseEntity<Inventario_cliente>> agregarItem(@RequestBody Inventario_cliente item){
-        return Mono.zip(productoClient.obtenerProducto(item.getIdProducto()),
-                usuarioClient.obtenerUsuario(item.getIdUsuario())
-        ).map(tuple2 -> {
-            Inventario_cliente guardado = service.agregarAlCarrito(item);
-            return ResponseEntity.status(HttpStatus.CREATED).body(guardado);
-        });
+    @PostMapping("/lote")
+    public Mono<ResponseEntity<List<Inventario_cliente>>> agregarItems(@RequestBody List<Inventario_cliente> items){
+        return Flux.fromIterable(items)
+                .flatMap(item ->
+                    Mono.zip(
+                            productoClient.obtenerProducto(item.getIdProducto()),
+                            usuarioClient.obtenerUsuario(item.getIdUsuario())
+                    ).flatMap(tuple2 -> {
+                        Producto producto = tuple2.getT1();
+                        item.setNombreProducto(producto.getNombre());
+                        item.setDescripcionProducto(producto.getDescripcion());
+                        return Mono.just(service.agregarAlCarrito(item));
+                    })
+                ).collectList()
+                .map(resultado -> ResponseEntity.status(HttpStatus.CREATED).body(resultado));
     }
 
     @GetMapping
