@@ -11,7 +11,7 @@ public class VentaDTO {
     private Long id;
     private Long idUsuario;
     private String nombreProducto;
-    private List<DetalleVentaDTO> detalles;
+    private List<DetalleVentaDTO> detalles; //WAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkajsdhajksdhkdh
     private Double total;
     private LocalDateTime fecha;
     private String estado;
