@@ -1,6 +1,8 @@
-CREATE TABLE IF NOT EXISTS evento_analitica(
+CREATE TABLE IF NOT EXISTS resenas(
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    tipo_evento VARCHAR(50) NOT NULL,
-    valor DOUBLE,
-    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    usuario_id BIGINT NOT NULL,
+    producto_id BIGINT NOT NULL,
+    calificacion INT NOT NULL CHECK (calificacion >= 1 AND calificacion <= 5),
+    comentario VARCHAR(500),
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
