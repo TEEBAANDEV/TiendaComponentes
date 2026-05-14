@@ -35,7 +35,7 @@ Actualmente el proyecto se encuentra en una fase media de integración.
 ![Progress](https://geps.dev/progress/40?dangerColor=ff4b2b&warningColor=ffa000&successColor=2ecc71)
 
 **Pagos:**
-![Progress](https://geps.dev/progress/40?dangerColor=ff4b2b&warningColor=ffa000&successColor=2ecc71)
+![Progress](https://geps.dev/progress/80?dangerColor=ff4b2b&warningColor=ffa000&successColor=2ecc71)
 ## 🚀 Arquitectura del Sistema
 
 El proyecto se compone de los siguientes microservicios. Haz clic en cada uno para acceder a su rama correspondiente:
