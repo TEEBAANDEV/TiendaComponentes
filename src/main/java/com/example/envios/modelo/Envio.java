@@ -17,10 +17,15 @@ import java.time.LocalDateTime;
 public class Envio {
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @Column(name = "id")
    private Long id;
+   @Column(name = "id_recibo")
    private Long idRecibo;
+   @Column(name = "id_usuario")
    private Long idUsuario;
+   @Column(name = "direccion_destino")
    private String direccionDestino;
+   @Column(name = "empresa_transporte")
    private String empresaTransporte;
    @Column(name = "codigo_seguimiento")
    private String codigoSeguimiento;

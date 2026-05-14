@@ -1,9 +1,11 @@
 CREATE TABLE envio(
    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-   idVenta BIGINT NOT NULL,
-   idUsuario BIGINT NOT NULL,
-   direccion_destino VARCHAR(255) NOT NULL,
-   estado_envio VARCHAR(50) DEFAULT 'PENDIENTE',
-   codigo_seguimiento VARCHAR(100) UNIQUE,
-   fecha_despacho TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+   id_recibo BIGINT,
+    id_usuario BIGINT,
+    direccion_destino VARCHAR(500),
+    empresa_transporte VARCHAR(500),
+    codigo_seguimiento VARCHAR(20),
+    estado_envio VARCHAR(50),
+    fecha_actualizacion DATE,
+    fecha_despacho DATETIME DEFAULT CURRENT_TIMESTAMP
 );
