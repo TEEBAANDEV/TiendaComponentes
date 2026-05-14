@@ -46,4 +46,14 @@ public class VentasController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    @PutMapping("/{id}/estado")
+    public ResponseEntity<Venta> actualizarEstado(@PathVariable Long id, @RequestParam String nuevoEstado){
+        try{
+            Venta ventaActualizada = ventaService.actualizarEstado(id, nuevoEstado);
+            return ResponseEntity.ok().body(ventaActualizada);
+        }catch(RuntimeException e){
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

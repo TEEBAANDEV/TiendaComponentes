@@ -92,5 +92,14 @@ public class VentaService {
         return repository.findById(id);
     }
 
+    public Venta actualizarEstado(Long id, String nuevoEstado){
+        return repository.findById(id)
+                .map(venta -> {
+                    venta.setEstado(nuevoEstado);
+                    return repository.save(venta);
+                })
+                .orElseThrow(() -> new RuntimeException("Venta no encontrada con ID: " + id));
+    }
+
 
 }
