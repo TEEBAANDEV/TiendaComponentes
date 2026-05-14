@@ -43,7 +43,7 @@ public class AuthController {
                 role = "USER";
             }
 
-            userService.register(username, password, role);
+            userService.register(username, password, role, direccion);;
             return ResponseEntity.ok(Map.of(
                     "message", "Usuario registrado correctamente",
                     "role", role
