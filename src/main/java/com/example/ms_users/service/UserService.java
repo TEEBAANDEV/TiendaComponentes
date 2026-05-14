@@ -18,16 +18,17 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     // Registro con rol específico
-    public User register(String username, String password, String role) {
+    public User register(String username, String password, String role, String direccion) {
         User user = User.builder()
                 .username(username)
                 .password(passwordEncoder.encode(password))
                 .role(role != null ? role : "USER") // Por defecto USER
+                .direccion(direccion)
                 .build();
         return userRepository.save(user);
     }
-    public User register(String username, String password) {
-        return register(username, password, "USER");
+    public User register(String username, String password, String direccion) {
+        return register(username, password, "USER", direccion);
     }
 
     public Optional<User> findByUsername(String username) {

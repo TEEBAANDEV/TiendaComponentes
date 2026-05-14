@@ -31,6 +31,7 @@ public class AuthController {
             String username = body.get("username");
             String password = body.get("password");
             String role = body.getOrDefault("role", "USER"); // Por defecto USER
+            String direccion = body.get("direccion");
 
             if (username == null || password == null || username.isBlank() || password.isBlank()) {
                 return ResponseEntity.badRequest()
