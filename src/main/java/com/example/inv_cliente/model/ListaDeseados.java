@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Table(name = "Carrito_items")
-public class Inventario_cliente {
+public class ListaDeseados {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

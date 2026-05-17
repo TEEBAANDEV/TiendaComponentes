@@ -3,9 +3,9 @@ package com.example.inv_cliente.controller;
 
 import com.example.inv_cliente.client.ProductoClient;
 import com.example.inv_cliente.client.UsuarioClient;
-import com.example.inv_cliente.model.Inventario_cliente;
+import com.example.inv_cliente.model.ListaDeseados;
 import com.example.inv_cliente.model.Producto;
-import com.example.inv_cliente.service.InventarioCliService;
+import com.example.inv_cliente.service.ListaDeseosService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,19 +17,19 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/carrito")
+@RequestMapping("/api/v1/wishlist")
 @RequiredArgsConstructor
-public class InventarioCliController {
+public class ListaDeseosController {
 
     private final ProductoClient productoClient;
 
     @Autowired
-    private final InventarioCliService service;
+    private final ListaDeseosService service;
     @Autowired
     private final UsuarioClient usuarioClient;
 
-    @PostMapping("/lote")
-    public Mono<ResponseEntity<List<Inventario_cliente>>> agregarItems(@RequestBody List<Inventario_cliente> items){
+    @PostMapping("/agregar")
+    public Mono<ResponseEntity<List<ListaDeseados>>> agregarItems(@RequestBody List<ListaDeseados> items){
         return Flux.fromIterable(items)
                 .flatMap(item ->
                     Mono.zip(
@@ -39,31 +39,31 @@ public class InventarioCliController {
                         Producto producto = tuple2.getT1();
                         item.setNombreProducto(producto.getNombre());
                         item.setDescripcionProducto(producto.getDescripcion());
-                        return Mono.just(service.agregarAlCarrito(item));
+                        return Mono.just(service.agregarALista(item));
                     })
                 ).collectList()
                 .map(resultado -> ResponseEntity.status(HttpStatus.CREATED).body(resultado));
     }
 
     @GetMapping
-    public ResponseEntity<List<Inventario_cliente>> listar(){
+    public ResponseEntity<List<ListaDeseados>> listar(){
         return ResponseEntity.ok(service.listar());
     }
 
     @GetMapping("/usuario/{idUsuario}")
-    public ResponseEntity<List<Inventario_cliente>> verCarrito(@PathVariable Long idUsuario){
-        return ResponseEntity.ok(service.obtenerCarritoPorUsuario(idUsuario));
+    public ResponseEntity<List<ListaDeseados>> verLista(@PathVariable Long idUsuario){
+        return ResponseEntity.ok(service.obtenerListaPorUsuario(idUsuario));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarItem(@PathVariable Long id){
-        service.eliminarDelCarrito(id);
+        service.eliminarDeLista(id);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/usuario/{idUsuario}")
-    public ResponseEntity<Void> vaciarCarrito(@PathVariable Long idUsuario){
-        service.vaciarCarritoPorUsuario(idUsuario);
+    public ResponseEntity<Void> vaciarLista(@PathVariable Long idUsuario){
+        service.vaciarListaPorUsuario(idUsuario);
         return ResponseEntity.noContent().build();
     }
 }
