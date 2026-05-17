@@ -1,9 +1,9 @@
 CREATE TABLE recibo(
-   idRecibo BIGINT PRIMARY KEY AUTO_INCREMENT,
-   idVenta  BIGINT,
-   idUsuario BIGINT,
-    nombreProducto TEXT,
-   montoTotal DOUBLE,
-   metodoPago VARCHAR(100),
-   fechaEmision DATETIME
+   id_recibo BIGINT PRIMARY KEY AUTO_INCREMENT,
+   id_venta  BIGINT,
+   id_usuario BIGINT,
+    nombre_producto TEXT,
+   monto_total DOUBLE,
+   metodo_pago VARCHAR(100),
+   fecha_emision DATETIME
 );

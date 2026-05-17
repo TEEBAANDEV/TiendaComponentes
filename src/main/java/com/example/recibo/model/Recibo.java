@@ -15,18 +15,18 @@ import java.time.LocalDateTime;
 public class Recibo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idRecibo")
+    @Column(name = "id_recibo")
     private Long idRecibo;
-    @Column(name = "idVenta")
+    @Column(name = "id_venta")
     private Long idVenta;
-    @Column(name = "idUsuario")
+    @Column(name = "id_usuario")
     private Long idUsuario;
-    @Column(name = "nombreProducto")
+    @Column(name = "nombre_producto")
     private String nombreProducto;
-    @Column(name = "montoTotal")
+    @Column(name = "monto_total")
     private Double montoTotal;
-    @Column(name = "metodoPago")
+    @Column(name = "metodo_pago")
     private String metodoPago;
-    @Column(name = "fechaEmision")
+    @Column(name = "fecha_emision")
     private LocalDateTime fechaEmision;
 }
