@@ -18,10 +18,16 @@ public class VentaClient {
         this.webClient = webClient;
     }
 
+
+    /* estamos pidiendo una peticion para consultar
+    el datalle de venta mediante su id mapeando la respusta con VentaDTO
+    si no lo encuentra retornará un error (Avatar la leyenda de Aang carrea mi estabilidad emocional)
+     */
+
     public Mono<VentaDTO> obtenerDetalleVenta(Long idVenta){
         return webClient.get()
                 .uri("/{id}", idVenta)
-                .retrieve()
+                .retrieve()   //retrieve solo me hace pensar en los perritos golden retriever
                 .onStatus(HttpStatusCode::is4xxClientError,response -> Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Venta no encontrada")))
                 .bodyToMono(VentaDTO.class);
     }

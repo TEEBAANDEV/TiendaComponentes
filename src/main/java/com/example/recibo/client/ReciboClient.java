@@ -15,7 +15,16 @@ import reactor.core.publisher.Mono;
 public class ReciboClient {
     private final WebClient webClient;
 
+
+    /* pedimos una peticion para consultar
+    el recibo de venta mediante su id
+    si el servicio devuelve un error de cliente lanzará una excepción indicando
+    que no fue encontrado (Como mi papá [Es broma profe si tengo papá])
+     */
     public Mono<Recibo> obtenerRecibo(Long id){
-        return webClient.get().uri("/{id}", id).retrieve().onStatus(HttpStatusCode::is4xxClientError, response -> Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Recibo no encontrado"))).bodyToMono(Recibo.class);
+        return webClient.get().uri("/{id}", id).retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError,
+                        response -> Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Recibo no encontrado")))
+                .bodyToMono(Recibo.class);
     }
 }

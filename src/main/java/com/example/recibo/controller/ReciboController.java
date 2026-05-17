@@ -23,12 +23,19 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/recibo")
 @RequiredArgsConstructor
 
+
 public class ReciboController {
     @Autowired
     private final VentaClient ventaClient;
 
     @Autowired
     private final ReciboService service;
+
+    /* Generar y guardar unu nuevo recibo basado en los detalles de una venta existente
+    mediante este orden: consulta al microservicio de ventas -> Cambia la ejecución a un hilo 'boundedElastic' para manejar de forma segura
+    el guardado bloqueante en la base de datos -> Mapea los detalles de la venta concatenando los productos
+    -> finalmente retorna 201 con recibo y 404 si no se encontró nada o hay alguna falla
+     */
 
     @PostMapping("/generar/{idVenta}")
     public Mono<ResponseEntity<Recibo>> crearRecibo(@PathVariable Long idVenta){
@@ -59,11 +66,13 @@ public class ReciboController {
     public List<Recibo> listarRecibos(){
         return service.listar();
     }
+    //que bien se siente escribir un metodo tan pequeño luego de algo tan grande
 
     @GetMapping("/{idRecibo}")
     public ResponseEntity<Recibo> obtenerPorId(@PathVariable Long idRecibo) {
         return service.obtenerPorId(idRecibo)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+
     }
 }
