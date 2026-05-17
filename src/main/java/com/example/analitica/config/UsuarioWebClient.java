@@ -6,10 +6,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
-public class WebClientConfig {
+public class UsuarioWebClient {
 
-    @Bean(name = "productoWebCLient")
+    @Bean(name = "userWebClient")
     public WebClient webClient(){
-        return WebClient.builder().baseUrl("http://localhost:9090/api/v1/productos").build();
+        return WebClient.builder().baseUrl("http://localhost:9092/api/v1/users").build();
     }
 }

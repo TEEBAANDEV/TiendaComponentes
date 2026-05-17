@@ -1,5 +1,6 @@
 package com.example.analitica.servicio;
 
+import com.example.analitica.client.UsuarioClient;
 import com.example.analitica.model.Resena;
 import com.example.analitica.repository.Resenarepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import java.util.stream.Collectors;
 public class ResenaService {
     @Autowired
     private Resenarepository repository;
+    @Autowired
+    private UsuarioClient usuarioClient;
 
     public Mono<Map<String, Object>> obtenerSoloPromedio(Long productoId) {
         return Mono.fromCallable(() -> repository.findByProductoId(productoId))
@@ -35,5 +38,9 @@ public class ResenaService {
 
     public List<Resena> obtenerComentarios (){
         return repository.findAll();
+    }
+
+    public Resena crearResena(Resena resena){
+        return repository.save(resena);
     }
 }
