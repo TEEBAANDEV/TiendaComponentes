@@ -94,13 +94,6 @@ Antes de ejecutar el proyecto, asegúrate de tener instalado:
 3. **Configurar variables de entorno:**
     Cada microservicio contiene un archivo `application.properties`. Asegúrate de actualizar las credenciales de la base de datos y las URLs de los servicios relacionados.
 
-### **OPCIONAL/RECOMENDADO:**
-Utilizar opcion de clonar mediante IntelliJ IDEA, para crear directorios de acuerdo a los branches. **Por ejemplo:**
-```bash
-cd tiendacomponentes/producto
-cd tiendacomponentes/carrito
-```
-
 ## 📡 Endpoints Principales (Resumen)
 
 | Servicio    | Puerto (Defecto) | Funcionalidad Clave                                                                           |
