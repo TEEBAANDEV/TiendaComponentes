@@ -21,7 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/carrito")
 @RequiredArgsConstructor
-@Validated
+@Validated //esto hizo que mi estabilidad mental se fuera un poco de vacaciones :D quiero cafe
 public class InventarioCliController {
 
     private final ProductoClient productoClient;
