@@ -24,18 +24,22 @@ public class Resena {
 
     @NotNull
     @Column(name = "usuario_id", nullable = false)
+    @NotNull
     private Long usuarioId;
 
     @NotNull
     @Column(name = "producto_id", nullable = false)
+    @NotNull
     private Long productoId;
 
     @NotNull
     @Column(name = "calificacion", nullable = false)
+    @NotNull
     private Integer calificacion; //
 
     @NotBlank
     @Column(name = "comentario", length = 500)
+    @NotBlank
     private String comentario;
 
     private LocalDateTime fecha;

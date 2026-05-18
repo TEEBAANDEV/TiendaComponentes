@@ -1,5 +1,6 @@
 package com.example.analitica.exception;
 
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,10 +16,9 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleBadRequest(MethodArgumentNotValidException ex){
         HashMap<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach((error) -> {
+        ex.getBindingResult().getFieldErrors().forEach(error -> {
             errors.put(error.getField(), error.getDefaultMessage());
-
         });
-        return new ErrorResponse("Error de validacion", 400, errors);
+        return new ErrorResponse(400,"Error de validacion",errors);
     }
 }

@@ -1,5 +1,6 @@
 package com.example.analitica.exception;
 
+
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -7,14 +8,16 @@ import java.util.HashMap;
 
 @Data
 public class ErrorResponse {
+
     private int status;
     private String error;
-    private LocalDateTime timestamp;
+    private LocalDateTime date;
     private HashMap<String,String> errors;
 
-    public ErrorResponse(String error, int status, HashMap<String, String> errors) {
-        this.error = error;
+    public ErrorResponse(int status, String error, HashMap<String, String> errors) {
         this.status = status;
+        this.error = error;
         this.errors = errors;
+        date = LocalDateTime.now();
     }
 }
