@@ -2,6 +2,7 @@ package com.example.inv_cliente.model;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -22,18 +23,17 @@ public class Inventario_cliente {
     private Long id;
 
     @Column(nullable = false)
-    @NotBlank
+    @NotNull(message = "El id de usuario es obligatorio")
     private Long idUsuario;
-
     @Column(nullable = false)
-    @NotBlank
+    @NotNull(message = "El id del producto es obligarorio")
     private Long idProducto;
     @Column(nullable = false)
     private String nombreProducto;
     @Column(nullable = false)
     private String descripcionProducto;
     @Column(nullable = false)
-    @NotBlank
-    private int cantidad;
+    @Min(value = 1,message = "La cantidad minima del producto es 1")
+    private Integer cantidad;
 
 }
