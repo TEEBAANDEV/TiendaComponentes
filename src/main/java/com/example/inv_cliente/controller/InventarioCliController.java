@@ -6,6 +6,7 @@ import com.example.inv_cliente.client.UsuarioClient;
 import com.example.inv_cliente.model.Inventario_cliente;
 import com.example.inv_cliente.model.Producto;
 import com.example.inv_cliente.service.InventarioCliService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,7 @@ public class InventarioCliController {
     private final UsuarioClient usuarioClient;
 
     @PostMapping("/lote")
-    public Mono<ResponseEntity<List<Inventario_cliente>>> agregarItems(@RequestBody List<Inventario_cliente> items){
+    public Mono<ResponseEntity<List<Inventario_cliente>>> agregarItems(@Valid @RequestBody List<Inventario_cliente> items){
         return Flux.fromIterable(items)
                 .flatMap(item ->
                     Mono.zip(
