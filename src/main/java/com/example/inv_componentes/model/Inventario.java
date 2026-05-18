@@ -2,6 +2,8 @@ package com.example.inv_componentes.model;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +21,7 @@ public class Inventario {
     private Long id;
 
     @Column(name = "id_Producto")
+    @NotNull
     private Long idProducto;
 
     @Column(name = "nombre_producto")
@@ -28,6 +31,7 @@ public class Inventario {
     private String descripcion;
 
     @Column(name = "cantidad")
-    private int cantidad;
+    @NotNull
+    private Integer cantidad;
 
 }

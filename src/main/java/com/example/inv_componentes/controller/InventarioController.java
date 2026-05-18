@@ -4,6 +4,7 @@ package com.example.inv_componentes.controller;
 import com.example.inv_componentes.client.ProductoClient;
 import com.example.inv_componentes.model.Inventario;
 import com.example.inv_componentes.service.InventarioService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,7 @@ public class InventarioController {
     private final InventarioService service;
 
     @PostMapping
-    public Mono<ResponseEntity<Inventario>> crearInventario(@RequestBody Inventario inventario){
+    public Mono<ResponseEntity<Inventario>> crearInventario(@Valid @RequestBody Inventario inventario){
         return productoClient.obtenerProducto(inventario.getIdProducto())
                 .map(producto -> {
                     inventario.setNombreProducto(producto.getNombre());

@@ -22,7 +22,7 @@ public class InventarioService {
          return repository.findAll();
      }
 
-     public void descontarStock(Long idProducto, int cantidadComprada){
+     public void descontarStock(Long idProducto, Integer cantidadComprada){
          repository.findByIdProducto(idProducto).ifPresent(inventario -> {
              int nuevoStock = inventario.getCantidad() - cantidadComprada;
              inventario.setCantidad(Math.max(nuevoStock,0));
