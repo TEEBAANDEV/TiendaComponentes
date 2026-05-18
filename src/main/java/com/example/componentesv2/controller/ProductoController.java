@@ -3,6 +3,7 @@ package com.example.componentesv2.controller;
 
 import com.example.componentesv2.model.Producto;
 import com.example.componentesv2.service.ProductoService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,12 +33,12 @@ public class ProductoController {
     }
 
     @PostMapping
-    public ResponseEntity<Producto> agregarProducto(@RequestBody Producto producto){
+    public ResponseEntity<Producto> agregarProducto(@Valid @RequestBody Producto producto){
         return ResponseEntity.status(HttpStatus.CREATED).body(service.agregarProducto(producto));
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> eliminarProducto(@PathVariable Long id){
+    public ResponseEntity<Void> eliminarProducto(@Valid @PathVariable Long id){
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
