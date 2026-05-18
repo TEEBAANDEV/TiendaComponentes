@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 @RestController
-@RequestMapping("/api/resenas")
+@RequestMapping("/api/v1/resenas")
 public class ResenaController {
 
     private final ResenaService resenaService;
@@ -40,11 +40,9 @@ public class ResenaController {
         return ResponseEntity.ok(resenaService.obtenerComentarios());
     }
 
-    @PostMapping
-    public Mono<ResponseEntity<Resena>> crearResena(@RequestBody Callable<Resena> items){
-        return Mono.fromCallable(items)
-                .flatMap(item ->
-                Mono.zip(
+    @PostMapping("/comentar/{productoId}")
+    public Mono<ResponseEntity<Resena>> crearResena(@RequestBody Resena item){
+        return Mono.zip(
                         productoClient.obtenerProducto(item.getProductoId()),
                         usuarioClient.obtenerUsuario(item.getUsuarioId())
                 ).flatMap(tuple2 -> {
@@ -52,8 +50,9 @@ public class ResenaController {
                         resena.setProductoId(item.getProductoId());
                         resena.setUsuarioId(item.getUsuarioId());
                         resena.setComentario(item.getComentario());
+                        resena.setCalificacion(item.getCalificacion());
                     return Mono.just(resenaService.crearResena(resena));
                 })
-                        .map(resena -> ResponseEntity.status(HttpStatus.CREATED).body(resena)));
+                        .map(resena -> ResponseEntity.status(HttpStatus.CREATED).body(resena));
     }
 }

@@ -26,10 +26,10 @@ public class Resena {
     @Column(name = "producto_id", nullable = false)
     private Long productoId;
 
-    @Column(nullable = false)
+    @Column(name = "calificacion", nullable = false)
     private Integer calificacion; //
 
-    @Column(length = 500)
+    @Column(name = "comentario", length = 500)
     private String comentario;
 
     private LocalDateTime fecha;
