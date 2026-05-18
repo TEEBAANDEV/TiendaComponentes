@@ -2,6 +2,7 @@ package com.example.inv_cliente.model;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -19,24 +20,21 @@ public class ListaDeseados {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @jakarta.validation.constraints.NotNull
     private Long id;
 
     @Column(nullable = false)
-    @NotNull
+    @NotNull(message = "El id de usuario es obligatorio")
     private Long idUsuario;
     @Column(nullable = false)
-    @NotNull
+    @NotNull(message = "El id del producto es obligatorio")
     private Long idProducto;
     @Column(nullable = false)
-    @NotBlank
     private String nombreProducto;
     @Column(nullable = false)
-    @NotBlank
     private String descripcionProducto;
 
     @Column(nullable = false)
-    @NotNull
+    @Min(value = 1, message = "La cantidad mínima debe ser 1") // Evita vacíos lógicos o ceros
     private Integer cantidad;
 
 }
