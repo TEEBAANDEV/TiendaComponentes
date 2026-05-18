@@ -130,7 +130,7 @@ Antes de ejecutar el proyecto, asegúrate de tener instalado:
 
 # INSTRUCCIONES POSTMAN
 
-## PRODUCTO
+## 📦PRODUCTO
 ### GET
 Para mostrar todo el listado es simplemente
 ```bash
@@ -162,7 +162,7 @@ Este funciona igual que en la busqueda de un producto
 ```bash
 /api/v1/productos/{IdProducto}
 ```
-## INVENTARIO
+## 🏢INVENTARIO
 
 ### GET
 Para mostrar todo el inventario es igual que en el microservicio de producto
@@ -203,7 +203,7 @@ Esto es el descuento del producto, para que sea eliminado deberia estar en 0
   "cantidad" : "Cantidad que se descuenta"
 }
 ```
-## USUARIO
+## 👤USUARIO
 
 ### GET
 En este caso solamente funciona por usuario, no tiene un listado general, para eso se podra ver en DB
@@ -222,7 +222,7 @@ api/v1/users/{IdUsuario}
 }
 ```
 * **La modificacion y eliminacion del usuario seria mediante manipulacion manual por SQL**
-## CARRITO
+## 🛒CARRITO
 
 ### GET
 En este caso se veran todos los carritos de esta forma
@@ -279,7 +279,7 @@ La otra forma es un vaciado completo del carrito usando la ID del usuario
 ```bash
 /api/v1/carrito/usuario/{IdUsuario}
 ```
-## VENTAS
+## 💰VENTAS
 
 ### GET
 Para obtener todas las ventas es mediante
@@ -310,7 +310,7 @@ Para el eliminado de la venta es mediante la propia ID de la venta
 /api/v1/Ventas/{IdVenta}
 ```
 
-## RECIBO
+## 📄RECIBO
 
 ### GET
 Para ver los recibos es mediante esta forma
@@ -327,7 +327,7 @@ Para generar recibos es de la misma forma que en ventas, necesita el id de venta
 /api/v1/recibo/generar/{IdVenta}
 ```
 **La modificacion y la eliminacion de los recibos seria manual mediante SQL**
-## ENVIOS
+## 🚚ENVIOS
 ### GET
 Para ver los envios es de la siguiente forma
 ```bash
@@ -345,7 +345,7 @@ Para generar un envio, primero debe haber algun recibo en DB, ya que se utiliza 
 
 * **La modificacion y eliminacion de los envios se realizan por medio de SQL**
 
-## COMENTARIOS
+## 💬COMENTARIOS
 
 ### GET
 Para ver todos los comentarios es de la siguiente forma
@@ -372,7 +372,7 @@ En Postman se debe ingresar de la siguiente forma
 ```
 * **La modificacion y la eliminacion de los comentarios se realizan a traves de SQL**
 
-## REPORTES
+## 📊REPORTES
 
 ### GET
 Para ver los reportes es de la siguiente forma
@@ -395,7 +395,7 @@ La eliminacion de los reportes es mediante su ID
 /api/v1/reportes/{IdReporte}
 ```
 
-## WISHLIST
+## ⭐WISHLIST
 
 ### GET
 Para ver los deseados es de la siguiente forma
