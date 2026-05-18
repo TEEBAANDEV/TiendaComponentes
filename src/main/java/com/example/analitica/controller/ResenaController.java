@@ -6,6 +6,7 @@ import com.example.analitica.model.ProductoDTO;
 import com.example.analitica.model.Resena;
 import com.example.analitica.repository.Resenarepository;
 import com.example.analitica.servicio.ResenaService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +42,7 @@ public class ResenaController {
     }
 
     @PostMapping("/comentar/{productoId}")
-    public Mono<ResponseEntity<Resena>> crearResena(@RequestBody Resena item){
+    public Mono<ResponseEntity<Resena>> crearResena(@Valid @RequestBody Resena item){
         return Mono.zip(
                         productoClient.obtenerProducto(item.getProductoId()),
                         usuarioClient.obtenerUsuario(item.getUsuarioId())
