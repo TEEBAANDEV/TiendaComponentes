@@ -22,6 +22,8 @@ public class VentasController {
 
     private final VentaService ventaService;
 
+    //Bienvenidos al microservicio mas potente que hay FUAAAAAAH
+
     @PostMapping("/comprar/{idUsuario}")
     public Mono<ResponseEntity<Object>> generarCompra(@PathVariable Long idUsuario) {
         return ventaService.procesarVenta(idUsuario)
