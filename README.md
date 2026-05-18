@@ -451,5 +451,11 @@ La otra forma es un vaciado completo de la Wishlist usando la ID del usuario
 ```bash
 /api/v1/wishlist/usuario/{IdUsuario}
 ```
+### Licencia
+```
+Copyright (c) 2026 TEEBAANDEV, ItsariMoreno, Shamo-CH
 
-***Este proyecto es de carácter educativo y privado. No se otorga permiso para su uso o distribución***
+Todos los derechos reservados.
+
+No se permite el uso, copia, modificación o distribución de este software y sus archivos de documentación asociados para ningún propósito, sin el permiso previo y por escrito del titular de los derechos de autor.
+```
