@@ -6,6 +6,7 @@ import com.example.inv_cliente.client.UsuarioClient;
 import com.example.inv_cliente.model.ListaDeseados;
 import com.example.inv_cliente.model.Producto;
 import com.example.inv_cliente.service.ListaDeseosService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,7 @@ public class ListaDeseosController {
     private final UsuarioClient usuarioClient;
 
     @PostMapping("/agregar")
-    public Mono<ResponseEntity<List<ListaDeseados>>> agregarItems(@RequestBody List<ListaDeseados> items){
+    public Mono<ResponseEntity<List<ListaDeseados>>> agregarItems(@Valid @RequestBody List<ListaDeseados> items){
         return Flux.fromIterable(items)
                 .flatMap(item ->
                     Mono.zip(
