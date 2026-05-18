@@ -22,7 +22,7 @@ public class Producto {
     private Long id;
 
     @Column(unique = true, nullable = false)
-    @NotBlank(message = "laskdjasdljasd")
+    @NotBlank
     private String nombre;
 
     @Column(nullable = false)
