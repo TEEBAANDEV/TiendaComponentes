@@ -1,4 +1,4 @@
-package com.example.envios.modelo;
+package com.example.envios.model;
 
 import lombok.Data;
 

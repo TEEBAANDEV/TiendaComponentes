@@ -3,7 +3,7 @@ package com.example.envios.controller;
 import com.example.envios.Service.EnvioService;
 import com.example.envios.client.ReciboClient;
 import com.example.envios.client.UsuarioClient;
-import com.example.envios.modelo.Envio;
+import com.example.envios.model.Envio;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -1,4 +1,4 @@
-package com.example.envios.modelo;
+package com.example.envios.model;
 
 
 import jakarta.persistence.*;
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "envio")
+@Table(name = "envios")
 public class Envio {
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,9 +29,11 @@ public class Envio {
    private String empresaTransporte;
    @Column(name = "codigo_seguimiento")
    private String codigoSeguimiento;
+   @Column(name = "estado_envio")
    private String estadoEnvio;
+   @Column(name = "fecha_actualizacion")
    private LocalDate fechaActalizacion;
-
+   @Column(name = "fecha_despacho")
    private LocalDateTime fechaDespacho;
 
    @PrePersist

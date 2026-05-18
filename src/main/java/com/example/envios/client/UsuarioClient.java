@@ -1,7 +1,7 @@
 package com.example.envios.client;
 
 
-import com.example.envios.modelo.UsuarioDTO;
+import com.example.envios.model.UsuarioDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -15,7 +15,7 @@ public class UsuarioClient {
 
     private final WebClient webClient;
 
-    public UsuarioClient(@Qualifier("webUserClient") WebClient webClient){
+    public UsuarioClient(@Qualifier("userWebClient") WebClient webClient){
         this.webClient = webClient;
     }
 

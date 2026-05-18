@@ -1,7 +1,7 @@
 package com.example.envios.Service;
 
 
-import com.example.envios.modelo.Envio;
+import com.example.envios.model.Envio;
 import com.example.envios.repository.EnvioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

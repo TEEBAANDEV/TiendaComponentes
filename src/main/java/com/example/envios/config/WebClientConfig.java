@@ -12,6 +12,6 @@ public class WebClientConfig {
     public WebClient webClient(){
 
         return WebClient.builder()
-                .baseUrl("https://localhost:9095/api/v1/recibo").build();
+                .baseUrl("http://localhost:9095/api/v1/recibo").build();
 }
 }

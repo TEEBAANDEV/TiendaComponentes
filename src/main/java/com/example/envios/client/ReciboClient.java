@@ -1,8 +1,7 @@
 package com.example.envios.client;
 
 
-import com.example.envios.modelo.ReciboDTO;
-import lombok.RequiredArgsConstructor;
+import com.example.envios.model.ReciboDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
