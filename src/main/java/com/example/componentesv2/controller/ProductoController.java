@@ -18,6 +18,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProductoController {
 
+    /*
+     Ahora me da nostalgia cuando pienso en el pasado
+     y no tenia que preocuparme que ResponseEntity funcionara
+    */
+
     @Autowired
     private ProductoService service;
 
