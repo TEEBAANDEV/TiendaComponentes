@@ -62,7 +62,7 @@ public class VentaService {
                                         .idUsuario(idUsuario)
                                         .total(totalCalculado) //cambio de emergencia supongo
                                         .fecha(LocalDateTime.now())
-                                        .estado("PENDIENTE")
+                                        .estado("PAGADO")
                                         .detalles(detallesCompletos)
                                         .build();
                                 Venta ventaGuardada = repository.save(venta);
