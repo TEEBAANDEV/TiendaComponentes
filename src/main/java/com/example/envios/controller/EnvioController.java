@@ -65,13 +65,6 @@ public class EnvioController {
                 });
     }
 
-    @GetMapping("/estado/{idRecibo}")
-    public Mono<ResponseEntity<Envio>> consultarEstado(@PathVariable Long idRecibo) {
-        return service.findById(idRecibo)
-                .map(ResponseEntity::ok)
-                .defaultIfEmpty(ResponseEntity.notFound().build());
-    }
-
 
 
 }
