@@ -1,6 +1,25 @@
 ![header](https://capsule-render.vercel.app/api?type=transparent&fontColor=ffffff&text=Tienda%20Componentes)
 
 Este repositorio centraliza la integración de los microservicios para la plataforma de gestión de ventas de componentes de hardware. El sistema utiliza una arquitectura distribuida basada en **Spring Boot**, orientada a la escalabilidad y al desacoplamiento de procesos.
+## 📌 Índice
+* [📊 Estado del Proyecto](#-estado-del-proyecto)
+* [🚀 Arquitectura del Sistema](#-arquitectura-del-sistema)
+* [🛠️ Tecnologías Utilizadas](#️-tecnologías-utilizadas)
+* [📋 Requisitos Previos](#-requisitos-previos)
+* [🔧 Configuración e Instalación](#-configuración-e-instalación)
+* [📡 Endpoints Principales (Resumen)](#-endpoints-principales-resumen)
+* [📬 Instrucciones Postman](#instrucciones-postman)
+    * [📦 Producto](#producto)
+    * [🏢 Inventario](#inventario)
+    * [👤 Usuario](#usuario)
+    * [🛒 Carrito](#carrito)
+    * [💰 Ventas](#ventas)
+    * [📄 Recibo](#recibo)
+    * [🚚 Envíos](#envios)
+    * [💬 Comentarios](#comentarios)
+    * [📊 Reportes](#reportes)
+    * [⭐ Wishlist](#wishlist)
+
 ## 📊 Estado del Proyecto
 Actualmente el proyecto se encuentra en una fase media de integración.
 
