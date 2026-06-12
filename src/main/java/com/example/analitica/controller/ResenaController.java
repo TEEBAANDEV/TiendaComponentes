@@ -6,6 +6,10 @@ import com.example.analitica.model.ProductoDTO;
 import com.example.analitica.model.Resena;
 import com.example.analitica.repository.Resenarepository;
 import com.example.analitica.servicio.ResenaService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +23,13 @@ import java.util.concurrent.Callable;
 
 @RestController
 @RequestMapping("/api/v1/resenas")
+@SecurityRequirement(name = "brearerAuth")
 public class ResenaController {
 
     private final ResenaService resenaService;
     private final ProductoClient productoClient;
     private final UsuarioClient usuarioClient;
+
 
     public ResenaController(ResenaService resenaService, ProductoClient productoClient, UsuarioClient usuarioClient) {
         this.resenaService = resenaService;
@@ -41,6 +47,28 @@ public class ResenaController {
         return ResponseEntity.ok(resenaService.obtenerComentarios());
     }
 
+    @Operation(
+            summary = "Crear reseña",
+            description = "Crea nueva reseña en el sistema"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "Reseña creada correctamente"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Datos invalidos"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "No autenticado"
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Sin permisos"
+            )
+    })
     @PostMapping("/comentar/{productoId}")
     public Mono<ResponseEntity<Resena>> crearResena(@Valid @RequestBody Resena item){
         return Mono.zip(
