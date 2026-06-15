@@ -15,9 +15,9 @@ public class OpenApiConfig {
         final String securitySchemeName = "bearerAuth";
         return new OpenAPI()
                 .info(new Info()
-                        .title("Api de Recibos")
+                        .title("Api de Productos")
                         .version("1.0")
-                        .description("Permite agregar recibos"))
+                        .description("Permite agregar productos"))
                 .addSecurityItem(new SecurityRequirement()
                         .addList(securitySchemeName))
                 .components(new Components()
