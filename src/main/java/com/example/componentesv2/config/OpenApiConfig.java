@@ -1,30 +1,34 @@
 package com.example.componentesv2.config;
 
-import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.security.SecurityRequirement;
-import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.springdoc.core.customizers.GlobalOpenApiCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class OpenApiConfig {
+
     @Bean
-    public OpenAPI customOpenApi(){
-        final String securitySchemeName = "bearerAuth";
+    public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Api de Productos")
-                        .version("1.0")
-                        .description("Permite agregar productos"))
-                .addSecurityItem(new SecurityRequirement()
-                        .addList(securitySchemeName))
-                .components(new Components()
-                        .addSecuritySchemes(securitySchemeName, new SecurityScheme()
-                                .name(securitySchemeName)
-                                .type(SecurityScheme.Type.HTTP)
-                                .scheme("bearer")
-                                .bearerFormat("JWT")));
+                        .title("Producto Microservice API")
+                        .version("1.0.0")
+                        .description("API para la gestión de productos en la tienda de componentes, incluyendo navegación a través de HATEOAS."));
+    }
+
+    @Bean
+    public GlobalOpenApiCustomizer removeLinksCustomizer() {
+        return openApi -> {
+            if (openApi.getComponents() != null && openApi.getComponents().getSchemas() != null) {
+                openApi.getComponents().getSchemas().forEach((name, schema) -> {
+                    if (schema.getProperties() != null) {
+                        schema.getProperties().remove("links");
+                        schema.getProperties().remove("_links");
+                    }
+                });
+            }
+        };
     }
 }
