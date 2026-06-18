@@ -1,6 +1,5 @@
 package com.example.inv_cliente.controller;
 
-
 import com.example.inv_cliente.client.ProductoClient;
 import com.example.inv_cliente.client.UsuarioClient;
 import com.example.inv_cliente.model.Inventario_cliente;
@@ -8,20 +7,27 @@ import com.example.inv_cliente.model.Producto;
 import com.example.inv_cliente.service.InventarioCliService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.server.reactive.WebFluxLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/carrito")
 @RequiredArgsConstructor
-@Validated //esto hizo que mi estabilidad mental se fuera un poco de vacaciones :D quiero cafe
+@Validated
+@Slf4j
 public class InventarioCliController {
 
     private final ProductoClient productoClient;
@@ -31,8 +37,31 @@ public class InventarioCliController {
     @Autowired
     private final UsuarioClient usuarioClient;
 
+    private Mono<Inventario_cliente> agregarLinks(Inventario_cliente item) {
+        Mono<Link> selfLink = WebFluxLinkBuilder.linkTo(
+                WebFluxLinkBuilder.methodOn(InventarioCliController.class).verCarrito(item.getIdUsuario())
+        ).withSelfRel().toMono();
+
+        Mono<Link> deleteLink = WebFluxLinkBuilder.linkTo(
+                WebFluxLinkBuilder.methodOn(InventarioCliController.class).eliminarItem(item.getId())
+        ).withRel("eliminar").toMono();
+
+        return Mono.zip(selfLink, deleteLink)
+                .map(tuple -> {
+                    item.add(tuple.getT1());
+                    item.add(tuple.getT2());
+                    return item;
+                });
+    }
+
     @PostMapping("/lote")
+    @Operation(summary = "Agregar lote de ítems al carrito", description = "Agrega múltiples ítems al carrito de compras validando la existencia de los productos y de los usuarios.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Lote de ítems agregado exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Datos de entrada no válidos")
+    })
     public Mono<ResponseEntity<List<Inventario_cliente>>> agregarItems(@Valid @RequestBody List<Inventario_cliente> items){
+        log.info("Agregando lote de {} ítems al carrito", items.size());
         return Flux.fromIterable(items)
                 .flatMap(item ->
                     Mono.zip(
@@ -45,29 +74,47 @@ public class InventarioCliController {
                         return Mono.fromCallable(() -> service.agregarAlCarrito(item))
                                 .subscribeOn(reactor.core.scheduler.Schedulers.boundedElastic());
                     })
-                ).collectList()
+                )
+                .flatMap(this::agregarLinks)
+                .collectList()
                 .map(resultado -> ResponseEntity.status(HttpStatus.CREATED).body(resultado));
     }
 
     @GetMapping
-    public ResponseEntity<List<Inventario_cliente>> listar(){
-        return ResponseEntity.ok(service.listar());
+    @Operation(summary = "Listar todos los ítems", description = "Retorna una lista reactiva con todos los ítems de carrito registrados.")
+    @ApiResponse(responseCode = "200", description = "Operación exitosa")
+    public Flux<Inventario_cliente> listar(){
+        log.info("Listando todos los ítems del carrito");
+        return Flux.fromIterable(service.listar())
+                .flatMap(this::agregarLinks);
     }
 
     @GetMapping("/usuario/{idUsuario}")
-    public ResponseEntity<List<Inventario_cliente>> verCarrito(@PathVariable Long idUsuario){
-        return ResponseEntity.ok(service.obtenerCarritoPorUsuario(idUsuario));
+    @Operation(summary = "Ver carrito de un usuario", description = "Retorna la lista reactiva de todos los ítems del carrito pertenecientes a un usuario.")
+    @ApiResponse(responseCode = "200", description = "Operación exitosa")
+    public Flux<Inventario_cliente> verCarrito(@PathVariable Long idUsuario){
+        log.info("Obteniendo el carrito para el usuario con ID: {}", idUsuario);
+        return Flux.fromIterable(service.obtenerCarritoPorUsuario(idUsuario))
+                .flatMap(this::agregarLinks);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarItem(@PathVariable Long id){
-        service.eliminarDelCarrito(id);
-        return ResponseEntity.noContent().build();
+    @Operation(summary = "Eliminar un ítem del carrito", description = "Elimina del carrito el ítem especificado por el ID.")
+    @ApiResponse(responseCode = "244", description = "Ítem eliminado correctamente (sin contenido)")
+    public Mono<ResponseEntity<Void>> eliminarItem(@PathVariable Long id){
+        log.info("Eliminando ítem del carrito con ID: {}", id);
+        return Mono.fromRunnable(() -> service.eliminarDelCarrito(id))
+                .subscribeOn(reactor.core.scheduler.Schedulers.boundedElastic())
+                .then(Mono.just(ResponseEntity.noContent().build()));
     }
 
     @DeleteMapping("/usuario/{idUsuario}")
-    public ResponseEntity<Void> vaciarCarrito(@PathVariable Long idUsuario){
-        service.vaciarCarritoPorUsuario(idUsuario);
-        return ResponseEntity.noContent().build();
+    @Operation(summary = "Vaciar el carrito de un usuario", description = "Elimina todos los ítems de carrito para el usuario especificado.")
+    @ApiResponse(responseCode = "204", description = "Carrito vaciado correctamente (sin contenido)")
+    public Mono<ResponseEntity<Void>> vaciarCarrito(@PathVariable Long idUsuario){
+        log.info("Vaciando el carrito para el usuario con ID: {}", idUsuario);
+        return Mono.fromRunnable(() -> service.vaciarCarritoPorUsuario(idUsuario))
+                .subscribeOn(reactor.core.scheduler.Schedulers.boundedElastic())
+                .then(Mono.just(ResponseEntity.noContent().build()));
     }
 }
