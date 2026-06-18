@@ -1,30 +1,38 @@
 package com.example.inv_cliente.config;
 
-import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.security.SecurityRequirement;
-import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.info.Contact;
+import org.springdoc.core.customizers.GlobalOpenApiCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class OpenApiConfig {
+
     @Bean
-    public OpenAPI customOpenApi(){
-        final String securitySchemeName = "bearerAuth";
+    public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Api de Wishlist")
-                        .version("1.0")
-                        .description("Permite agregar Lista de Deseos"))
-                .addSecurityItem(new SecurityRequirement()
-                        .addList(securitySchemeName))
-                .components(new Components()
-                        .addSecuritySchemes(securitySchemeName, new SecurityScheme()
-                                .name(securitySchemeName)
-                                .type(SecurityScheme.Type.HTTP)
-                                .scheme("bearer")
-                                .bearerFormat("JWT")));
+                        .title("Wishlist Microservice API")
+                        .version("1.0.0")
+                        .description("API for managing wishlist (Lista de deseos) for components store")
+                        .contact(new Contact()
+                                .name("Support Team")
+                                .email("support@example.com")));
+    }
+
+    @Bean
+    public GlobalOpenApiCustomizer removeLinksCustomizer() {
+        return openApi -> {
+            if (openApi.getComponents() != null && openApi.getComponents().getSchemas() != null) {
+                openApi.getComponents().getSchemas().forEach((name, schema) -> {
+                    if (schema.getProperties() != null) {
+                        schema.getProperties().remove("links");
+                        schema.getProperties().remove("_links");
+                    }
+                });
+            }
+        };
     }
 }
