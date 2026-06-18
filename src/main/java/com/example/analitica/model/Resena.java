@@ -8,17 +8,20 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Data
+@EqualsAndHashCode(callSuper = true)
 @Table(name = "resenas")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Schema(description = "Entidad que representa los comentarios en el sistema")
-public class Resena {
+public class Resena extends RepresentationModel<Resena> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -43,4 +43,8 @@ public class ResenaService {
     public Resena crearResena(Resena resena){
         return repository.save(resena);
     }
+
+    public java.util.Optional<Resena> obtenerPorId(Long id) {
+        return repository.findById(id);
+    }
 }
