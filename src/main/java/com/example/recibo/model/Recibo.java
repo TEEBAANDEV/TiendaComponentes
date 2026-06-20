@@ -21,7 +21,7 @@ public class Recibo extends RepresentationModel<Recibo> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idRecibo")
-    @Schema(description = "ID único del recibo", example = "1")
+    @Schema(description = "ID único del recibo", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Long idRecibo;
     
     @Column(name = "idVenta")
