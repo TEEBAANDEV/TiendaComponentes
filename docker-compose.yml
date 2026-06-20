@@ -1,0 +1,126 @@
+services:
+  eureka-server:
+    build: ./eureka-server
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+
+
+  carrito:
+    build: ./Carrito
+    container_name: carrito
+    ports:
+      - "9093:9093"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - eureka-server
+  comentarios:
+    build: ./Comentarios
+    container_name: comentarios
+    ports:
+      - "9097:9097"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - eureka-server
+
+  envios:
+    build: ./Envios
+    container_name: envios
+    ports:
+      - "9096:9096"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - eureka-server
+
+  inventario:
+    build: ./Inventario
+    container_name: inventario
+    ports:
+      - "9091:9091"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - eureka-server
+
+  productos:
+    build: ./Productos
+    container_name: productos
+    ports:
+      - "9090:9090"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - eureka-server
+
+  recibo:
+    build: ./Recibo
+    container_name: recibo
+    ports:
+      - "9095:9095"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - eureka-server
+
+  reportes:
+    build: ./Reportes
+    container_name: reportes
+    ports:
+      - "9098:9098"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - eureka-server
+
+  ms-auth:
+    build: ./Usuario
+    container_name: ms-auth
+    ports:
+      - "9092:9092"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - eureka-server
+
+  ventas:
+    build: ./Ventas
+    container_name: ventas
+    ports:
+      - "9094:9094"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - eureka-server
+
+  wishlist:
+    build: ./Wishlist
+    container_name: wishlist
+    ports:
+      - "9099:9099"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - eureka-server
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "9100:9100"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - eureka-server
+      - carrito
+      - comentarios
+      - envios
+      - inventario
+      - productos
+      - recibo
+      - reportes
+      - ms-auth
+      - ventas
+      - wishlist
