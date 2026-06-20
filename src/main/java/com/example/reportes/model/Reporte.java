@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 public class Reporte extends RepresentationModel<Reporte> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(description = "ID único del reporte", example = "1")
+    @Schema(description = "ID único del reporte", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
 
     @Column(name = "id_Recibo")
