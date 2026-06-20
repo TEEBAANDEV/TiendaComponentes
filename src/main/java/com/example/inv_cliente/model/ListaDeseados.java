@@ -20,35 +20,35 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @AllArgsConstructor
 @Builder
 @Table(name = "lista_deseos_items")
-@Schema(description = "Entity representing a wishlist item")
+@Schema(description = "Entidad que representa un ítem de la lista de deseos")
 public class ListaDeseados extends RepresentationModel<ListaDeseados> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(description = "Unique identifier of the wishlist item", example = "1")
+    @Schema(description = "Identificador único del ítem en la lista de deseos", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
 
     @Column(nullable = false)
     @NotNull(message = "El id de usuario es obligatorio")
-    @Schema(description = "ID of the user who owns this wishlist item", example = "12")
+    @Schema(description = "ID del usuario dueño de este ítem en la lista de deseos", example = "12")
     private Long idUsuario;
 
     @Column(nullable = false)
     @NotNull(message = "El id del producto es obligatorio")
-    @Schema(description = "ID of the product added to the wishlist", example = "34")
+    @Schema(description = "ID del producto agregado a la lista de deseos", example = "34")
     private Long idProducto;
 
     @Column(nullable = false)
-    @Schema(description = "Name of the product", example = "AMD Ryzen 5 5600X")
+    @Schema(description = "Nombre del producto", example = "AMD Ryzen 5 5600X")
     private String nombreProducto;
 
     @Column(nullable = false)
-    @Schema(description = "Description of the product", example = "Processor 6 cores 12 threads")
+    @Schema(description = "Descripción del producto", example = "Processor 6 cores 12 threads")
     private String descripcionProducto;
 
     @Column(nullable = false)
     @Min(value = 1, message = "La cantidad mínima debe ser 1") // Evita vacíos lógicos o ceros
-    @Schema(description = "Quantity of the product requested", example = "1")
+    @Schema(description = "Cantidad solicitada del producto", example = "1")
     private Integer cantidad;
 
 }

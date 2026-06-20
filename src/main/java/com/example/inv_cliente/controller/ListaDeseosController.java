@@ -28,7 +28,7 @@ import static org.springframework.hateoas.server.reactive.WebFluxLinkBuilder.met
 @RequiredArgsConstructor
 @Validated
 @Slf4j
-@Tag(name = "Wishlist Controller", description = "Endpoints for managing user wishlists")
+@Tag(name = "Controlador de Lista de Deseos", description = "Endpoints para gestionar la lista de deseos de los usuarios")
 public class ListaDeseosController {
 
     private final ProductoClient productoClient;
