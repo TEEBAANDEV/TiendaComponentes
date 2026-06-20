@@ -1,6 +1,0 @@
-# Ignore everything
-*
-
-# Allow files
-!docker-compose.yml
-!.gitignore
