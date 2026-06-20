@@ -25,7 +25,7 @@ public class Inventario_cliente extends RepresentationModel<Inventario_cliente> 
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(description = "Identificador único del ítem en el carrito", example = "1")
+    @Schema(description = "Identificador único del ítem en el carrito", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
 
     @Column(nullable = false)
