@@ -22,10 +22,10 @@ public class UserController {
 
     private final UserService userService;
 
-    @Operation(summary = "Retrieve a user by their unique ID", description = "Provides detailed user info along with HATEOAS links.")
+    @Operation(summary = "Obtener un usuario por su ID único", description = "Proporciona información detallada del usuario junto con enlaces HATEOAS.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User retrieved successfully"),
-            @ApiResponse(responseCode = "404", description = "User not found")
+            @ApiResponse(responseCode = "200", description = "Usuario obtenido exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
     @GetMapping("{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id){

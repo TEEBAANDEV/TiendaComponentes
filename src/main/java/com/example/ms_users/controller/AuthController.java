@@ -9,10 +9,16 @@ import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/auth")
+@Tag(name = "Controlador de Autenticación", description = "Endpoints para el registro, inicio de sesión y validación de tokens de usuario")
 public class AuthController {
 
     private final AuthenticationManager authManager;
@@ -25,8 +31,23 @@ public class AuthController {
         this.userService = userService;
     }
 
+    @Operation(summary = "Registrar un nuevo usuario", description = "Crea una nueva cuenta de usuario en el sistema con rol especificado.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario registrado correctamente"),
+            @ApiResponse(responseCode = "400", description = "Solicitud incorrecta, campos faltantes o inválidos"),
+            @ApiResponse(responseCode = "409", description = "Conflicto, el usuario ya existe")
+    })
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody Map<String, String> body) {
+    public ResponseEntity<?> register(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                content = @io.swagger.v3.oas.annotations.media.Content(
+                    mediaType = "application/json",
+                    schema = @io.swagger.v3.oas.annotations.media.Schema(
+                        example = "{\n  \"username\": \"john_doe\",\n  \"password\": \"encodedPassword123\",\n  \"role\": \"USER\",\n  \"direccion\": \"123\"\n}"
+                    )
+                )
+            )
+            @RequestBody Map<String, String> body) {
         try {
             String username = body.get("username");
             String password = body.get("password");
@@ -55,8 +76,23 @@ public class AuthController {
         }
     }
 
+    @Operation(summary = "Iniciar sesión", description = "Autentica al usuario y retorna un token JWT válido.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Sesión iniciada correctamente, retorna token JWT"),
+            @ApiResponse(responseCode = "401", description = "Credenciales incorrectas o usuario no encontrado"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> body) {
+    public ResponseEntity<?> login(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                content = @io.swagger.v3.oas.annotations.media.Content(
+                    mediaType = "application/json",
+                    schema = @io.swagger.v3.oas.annotations.media.Schema(
+                        example = "{\n  \"username\": \"john_doe\",\n  \"password\": \"encodedPassword123\"\n}"
+                    )
+                )
+            )
+            @RequestBody Map<String, String> body) {
         try {
             String username = body.get("username");
             String password = body.get("password");
@@ -90,6 +126,11 @@ public class AuthController {
         }
     }
 
+    @Operation(summary = "Validar token JWT", description = "Verifica si el token enviado es válido y no ha expirado.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Token válido"),
+            @ApiResponse(responseCode = "401", description = "Token inválido o expirado")
+    })
     @GetMapping("/validate")
     public ResponseEntity<?> validateToken() {
         return ResponseEntity.ok(Map.of("valid", true));
