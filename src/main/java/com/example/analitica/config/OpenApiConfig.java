@@ -18,6 +18,15 @@ public class OpenApiConfig {
     public OpenAPI customOpenApi(){
         final String securitySchemeName = "bearerAuth";
         return new OpenAPI()
+                .addSecurityItem(new SecurityRequirement().addList("BearerAuth"))
+                .components(new Components()
+                        .addSecuritySchemes("BearerAuth", new SecurityScheme()
+                                .name("BearerAuth")
+                                .type(SecurityScheme.Type.HTTP)
+                                .scheme("bearer")
+                                .bearerFormat("JWT")
+                        )
+                )
                 .info(new Info()
                         .title("Api de Reseñas")
                         .version("1.0")
