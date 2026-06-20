@@ -24,7 +24,7 @@ public class Venta extends RepresentationModel<Venta> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(description = "ID único de la venta", example = "1")
+    @Schema(description = "ID único de la venta", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
 
     @Column(name = "id_usuario", nullable = false)
