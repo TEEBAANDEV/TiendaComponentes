@@ -22,8 +22,8 @@ public class Envio extends RepresentationModel<Envio> {
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "id")
-   @Schema(description = "ID único del envío", example = "1")
-   private Long id;
+   @Schema(description = "ID único del envío", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
+    private Long id;
 
    @Column(name = "id_recibo")
    @Schema(description = "ID del recibo asociado al envío", example = "12")
