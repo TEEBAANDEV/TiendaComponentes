@@ -156,7 +156,7 @@ Antes de ejecutar el proyecto, asegúrate de tener instalado:
    ```
    
 6. **Utilizar Docker en consola**
-   **IMPORTANTE: ** Debes descargar el archivo llamado docker-compose.yml que lo puedes encontrar en esta misma branch
+   **IMPORTANTE:** Debes descargar el archivo llamado docker-compose.yml que lo puedes encontrar en esta misma branch
    Teniendo completado el paso anterior,abre Docker Desktop, vuelve a la carpeta raiz con cmd o powershell y se utiliza el siguiente comando.
    ```bash
    docker compose build
