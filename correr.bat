@@ -30,4 +30,5 @@ echo Iniciando empaquetado para Docker
 timeout /t 3
 call docker compose build
 call docker compose up -d
+timeout /t 10
 echo Proceso Finalizado!
