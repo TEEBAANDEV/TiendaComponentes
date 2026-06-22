@@ -1,7 +1,7 @@
 @echo off
 echo Creando carpeta TiendaComponentes
 timeout /t 5
-call mkdir TiendaComponentes
+call git clone https://github.com/TEEBAANDEV/TiendaComponentes.git
 cd tiendacomponentes
 echo clonando repositorio y ramas
 timeout /t 5
