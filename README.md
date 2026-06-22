@@ -121,10 +121,10 @@ Antes de ejecutar el proyecto, asegúrate de tener instalado:
 3. **Configurar variables de entorno:**
     Cada microservicio contiene un archivo `application.properties`. Asegúrate de actualizar las credenciales de la base de datos y las URLs de los servicios relacionados.
    
-4. **Ejecutar XAMPP y el puerto de MySQL**
+4. **Ejecutar XAMPP y el puerto de MySQL:**
    REQUISITO para poder realizar el siguiente paso, en este caso el puerto de MySQL debe ser 3307 o se puede cambiar en el `application.properties` a 3306 como esta originalmente configurado xampp
    
-5. **Compilar microservicios**
+5. **Compilar microservicios:**
    Cada microservicio debe ser compilado antes de poder pasar a un contenedor en docker.
    Para este paso debes ir al explorador de archivos e ingresar a carpeta "TiendaComponentes" como ya se realizo a la hora de clonar los microservicios.
    ```bash
@@ -155,14 +155,14 @@ Antes de ejecutar el proyecto, asegúrate de tener instalado:
    cd ..
    ```
    
-6. **Utilizar Docker en consola**
+6. **Utilizar Docker en consola:**
    IMPORTANTE: Debes descargar el archivo llamado docker-compose.yml que lo puedes encontrar en esta misma branch
    Teniendo completado el paso anterior,abre Docker Desktop, vuelve a la carpeta raiz con cmd o powershell y se utiliza el siguiente comando.
    ```bash
    docker compose build
    docker compose up -d
    ```
-7. **Usar microservicios**
+7. **Usar microservicios:**
    Al iniciar los microservicios en Docker, puedes ir a la pagina de Eureka presionando su puerto, en el caso de los microservicios, son todos mediante Postman y su documentacion es a través de este link:
    ```bash
    http://localhost:[Puerto]/swagger-ui/index.html
