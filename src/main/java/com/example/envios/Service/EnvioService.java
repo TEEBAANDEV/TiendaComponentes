@@ -24,16 +24,13 @@ public class EnvioService {
         return Mono.fromCallable(() -> repository.save(envio))
                 .subscribeOn(Schedulers.boundedElastic());
     }
-    public Flux<Envio> listar() {
-        return Mono.fromCallable(repository::findAll)
-                .flatMapMany(Flux::fromIterable)
-                .subscribeOn(Schedulers.boundedElastic());
+    public List<Envio> listar() {
+        return repository.findAll();
     }
 
-
-    public Mono<Envio> findById(Long id) {
+    public Optional<Envio> findById(Long id) {
         return Mono.fromCallable(() -> repository.findById(id).orElse(null))
-                .subscribeOn(Schedulers.boundedElastic());
+                .subscribeOn(Schedulers.boundedElastic()).blockOptional();
     }
 
 }
