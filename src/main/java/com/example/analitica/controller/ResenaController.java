@@ -3,7 +3,6 @@ package com.example.analitica.controller;
 import com.example.analitica.client.ProductoClient;
 import com.example.analitica.client.UsuarioClient;
 import com.example.analitica.model.Resena;
-import org.springframework.hateoas.server.reactive.WebFluxLinkBuilder;
 import com.example.analitica.servicio.ResenaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -18,7 +17,11 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import java.util.List;
 import java.util.Map;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/api/v1/resenas")
@@ -42,40 +45,42 @@ public class ResenaController {
             description = "Calcula el promedio de estrellas y el total de votos para un producto dado"
     )
     @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Promedio calculado exitosamente"
-            )
+            @ApiResponse(responseCode = "200", description = "Promedio calculado exitosamente")
     })
-    public Mono<Map<String, Object>> getPromedio(@PathVariable Long productoId) {
+    public ResponseEntity<Map<String, Object>> getPromedio(@PathVariable Long productoId) {
+
         log.info("Obteniendo promedio de calificaciones para productoId: {}", productoId);
-        return resenaService.obtenerSoloPromedio(productoId);
+
+        Map<String, Object> resultado = resenaService.obtenerSoloPromedio(productoId).block();
+
+        return ResponseEntity.ok(resultado);
     }
 
     @GetMapping
     @Operation(
             summary = "Obtener comentarios",
-            description = "Retorna todos los comentarios en el sistema de manera reactiva con enlaces HATEOAS"
+            description = "Retorna todos los comentarios del sistema con enlaces HATEOAS"
     )
     @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Comentarios obtenidos correctamente"
-            )
+            @ApiResponse(responseCode = "200", description = "Comentarios obtenidos correctamente")
     })
-    public Flux<Resena> obtenerComentarios() {
-        log.info("Solicitando todos los comentarios de manera reactiva");
-        return Flux.defer(() -> Flux.fromIterable(resenaService.obtenerComentarios()))
-                .subscribeOn(Schedulers.boundedElastic())
-                .flatMap(resena -> WebFluxLinkBuilder.linkTo(
-                        WebFluxLinkBuilder.methodOn(ResenaController.class).obtenerResenaPorId(resena.getId())
-                )
-                .withSelfRel()
-                .toMono()
-                .map(link -> {
-                    resena.add(link);
-                    return resena;
-                }));
+    public ResponseEntity<List<Resena>> obtenerComentarios() {
+
+        log.info("Solicitando todos los comentarios");
+
+        List<Resena> comentarios = resenaService.obtenerComentarios();
+
+        comentarios.forEach(resena -> {
+
+            resena.add(
+                    linkTo(methodOn(ResenaController.class)
+                            .obtenerResenaPorId(resena.getId()))
+                            .withSelfRel()
+            );
+
+        });
+
+        return ResponseEntity.ok(comentarios);
     }
 
     @GetMapping("/{id}")
@@ -97,20 +102,17 @@ public class ResenaController {
         log.info("Buscando reseña con ID: {}", id);
         return Mono.fromCallable(() -> resenaService.obtenerPorId(id))
                 .subscribeOn(Schedulers.boundedElastic())
-                .flatMap(resenaOpt -> {
+                .map(resenaOpt -> {
                     if (resenaOpt.isPresent()) {
                         Resena resena = resenaOpt.get();
-                        return WebFluxLinkBuilder.linkTo(
-                                WebFluxLinkBuilder.methodOn(ResenaController.class).obtenerResenaPorId(id)
-                        )
-                        .withSelfRel()
-                        .toMono()
-                        .map(link -> {
-                            resena.add(link);
-                            return ResponseEntity.ok(resena);
-                        });
+                        try {
+                            resena.add(linkTo(methodOn(ResenaController.class).obtenerResenaPorId(id)).withSelfRel());
+                        } catch (Exception e) {
+                            log.error("Error building link: {}", e.getMessage());
+                        }
+                        return ResponseEntity.ok(resena);
                     } else {
-                        return Mono.just(ResponseEntity.notFound().build());
+                        return ResponseEntity.notFound().build();
                     }
                 });
     }
@@ -152,14 +154,13 @@ public class ResenaController {
                     return Mono.fromCallable(() -> resenaService.crearResena(resena))
                             .subscribeOn(Schedulers.boundedElastic());
                 })
-                .flatMap(resena -> WebFluxLinkBuilder.linkTo(
-                        WebFluxLinkBuilder.methodOn(ResenaController.class).obtenerResenaPorId(resena.getId())
-                )
-                .withSelfRel()
-                .toMono()
-                .map(link -> {
-                    resena.add(link);
+                .map(resena -> {
+                    try {
+                        resena.add(linkTo(methodOn(ResenaController.class).obtenerResenaPorId(resena.getId())).withSelfRel());
+                    } catch (Exception e) {
+                        log.error("Error building link: {}", e.getMessage());
+                    }
                     return ResponseEntity.status(HttpStatus.CREATED).body(resena);
-                }));
+                });
     }
 }

@@ -41,7 +41,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             if (jwtService.isTokenValid(token)) {
                 String username = jwtService.extractUsername(token);
-                String role = jwtService.extractRole(token); // 👈 rol directo del token
+                String role = jwtService.extractRole(token);
 
                 List<GrantedAuthority> authorities = List.of(
                         new SimpleGrantedAuthority("ROLE_" + role)
