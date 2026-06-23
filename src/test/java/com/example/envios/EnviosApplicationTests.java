@@ -30,7 +30,7 @@ class EnviosApplicationTests {
 	private EnvioService service;
 
 	@Test
-	void deberiaRetornarListaVaciaCuandoNoHayElementos() {
+	void deberiaRetornarListaVaciaCuandoEstaVacia() {
 		Mockito.when(repository.findAll()).thenReturn(Collections.emptyList());
 
 		Flux<Envio> resultado = service.listar();
@@ -43,7 +43,7 @@ class EnviosApplicationTests {
 	}
 	@Test
 	@DisplayName("Debería retornar los envíos almacenados cuando existen elementos en el sistema")
-	void deberiaRetornarListaConElementosCuandoExistenEnvios() {
+	void deberiaRetornarListaConEnviosCuandoExistenEnvios() {
 
 		Envio envioMock = new Envio();
 		envioMock.setId(1L);
