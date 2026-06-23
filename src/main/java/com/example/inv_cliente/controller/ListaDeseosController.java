@@ -20,8 +20,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-import static org.springframework.hateoas.server.reactive.WebFluxLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.reactive.WebFluxLinkBuilder.methodOn;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/api/v1/wishlist")
@@ -39,16 +39,14 @@ public class ListaDeseosController {
     private final UsuarioClient usuarioClient;
 
     private Mono<ListaDeseados> addLinks(ListaDeseados item) {
-        return Mono.zip(
-                linkTo(methodOn(ListaDeseosController.class).verLista(item.getIdUsuario())).withSelfRel().toMono(),
-                linkTo(methodOn(ListaDeseosController.class).eliminarItem(item.getId())).withRel("eliminar").toMono(),
-                linkTo(methodOn(ListaDeseosController.class).vaciarLista(item.getIdUsuario())).withRel("vaciar").toMono()
-        ).map(tuple -> {
-            item.add(tuple.getT1());
-            item.add(tuple.getT2());
-            item.add(tuple.getT3());
-            return item;
-        });
+        try {
+            item.add(linkTo(methodOn(ListaDeseosController.class).verLista(item.getIdUsuario())).withSelfRel());
+            item.add(linkTo(methodOn(ListaDeseosController.class).eliminarItem(item.getId())).withRel("eliminar"));
+            item.add(linkTo(methodOn(ListaDeseosController.class).vaciarLista(item.getIdUsuario())).withRel("vaciar"));
+        } catch (Exception e) {
+            log.error("Error building links: {}", e.getMessage());
+        }
+        return Mono.just(item);
     }
 
     @PostMapping("/agregar")
