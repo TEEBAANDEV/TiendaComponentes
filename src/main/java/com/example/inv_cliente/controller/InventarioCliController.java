@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.server.reactive.WebFluxLinkBuilder;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -22,6 +22,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/api/v1/carrito")
@@ -38,20 +41,13 @@ public class InventarioCliController {
     private final UsuarioClient usuarioClient;
 
     private Mono<Inventario_cliente> agregarLinks(Inventario_cliente item) {
-        Mono<Link> selfLink = WebFluxLinkBuilder.linkTo(
-                WebFluxLinkBuilder.methodOn(InventarioCliController.class).verCarrito(item.getIdUsuario())
-        ).withSelfRel().toMono();
-
-        Mono<Link> deleteLink = WebFluxLinkBuilder.linkTo(
-                WebFluxLinkBuilder.methodOn(InventarioCliController.class).eliminarItem(item.getId())
-        ).withRel("eliminar").toMono();
-
-        return Mono.zip(selfLink, deleteLink)
-                .map(tuple -> {
-                    item.add(tuple.getT1());
-                    item.add(tuple.getT2());
-                    return item;
-                });
+        try {
+            item.add(linkTo(methodOn(InventarioCliController.class).verCarrito(item.getIdUsuario())).withSelfRel());
+            item.add(linkTo(methodOn(InventarioCliController.class).eliminarItem(item.getId())).withRel("eliminar"));
+        } catch (Exception e) {
+            log.error("Error building links: {}", e.getMessage());
+        }
+        return Mono.just(item);
     }
 
     @PostMapping("/lote")
@@ -81,21 +77,63 @@ public class InventarioCliController {
     }
 
     @GetMapping
-    @Operation(summary = "Listar todos los ítems", description = "Retorna una lista reactiva con todos los ítems de carrito registrados.")
+    @Operation(
+            summary = "Listar todos los ítems",
+            description = "Retorna una lista con todos los ítems de carrito registrados."
+    )
     @ApiResponse(responseCode = "200", description = "Operación exitosa")
-    public Flux<Inventario_cliente> listar(){
+    public ResponseEntity<List<Inventario_cliente>> listar() {
+
         log.info("Listando todos los ítems del carrito");
-        return Flux.fromIterable(service.listar())
-                .flatMap(this::agregarLinks);
+
+        List<Inventario_cliente> items = service.listar();
+
+        items.forEach(item -> {
+            item.add(
+                    linkTo(methodOn(InventarioCliController.class)
+                            .listar())
+                            .withSelfRel()
+            );
+
+            item.add(
+                    linkTo(methodOn(InventarioCliController.class)
+                            .verCarrito(item.getIdUsuario()))
+                            .withRel("carrito-usuario")
+            );
+        });
+
+        return ResponseEntity.ok(items);
     }
 
     @GetMapping("/usuario/{idUsuario}")
-    @Operation(summary = "Ver carrito de un usuario", description = "Retorna la lista reactiva de todos los ítems del carrito pertenecientes a un usuario.")
+    @Operation(
+            summary = "Ver carrito de un usuario",
+            description = "Retorna todos los ítems del carrito pertenecientes a un usuario."
+    )
     @ApiResponse(responseCode = "200", description = "Operación exitosa")
-    public Flux<Inventario_cliente> verCarrito(@PathVariable Long idUsuario){
+    public ResponseEntity<List<Inventario_cliente>> verCarrito(
+            @PathVariable Long idUsuario) {
+
         log.info("Obteniendo el carrito para el usuario con ID: {}", idUsuario);
-        return Flux.fromIterable(service.obtenerCarritoPorUsuario(idUsuario))
-                .flatMap(this::agregarLinks);
+
+        List<Inventario_cliente> items =
+                service.obtenerCarritoPorUsuario(idUsuario);
+
+        items.forEach(item -> {
+            item.add(
+                    linkTo(methodOn(InventarioCliController.class)
+                            .verCarrito(idUsuario))
+                            .withSelfRel()
+            );
+
+            item.add(
+                    linkTo(methodOn(InventarioCliController.class)
+                            .listar())
+                            .withRel("todos")
+            );
+        });
+
+        return ResponseEntity.ok(items);
     }
 
     @DeleteMapping("/{id}")
