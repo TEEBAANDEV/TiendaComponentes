@@ -31,7 +31,7 @@ public class Venta extends RepresentationModel<Venta> {
     @Schema(description = "ID del usuario comprador", example = "5")
     private Long idUsuario;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "venta_id", nullable = false)
     @Schema(description = "Detalles de los productos vendidos")
     private List<DetalleVenta> detalles;

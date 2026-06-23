@@ -14,8 +14,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-import static org.springframework.hateoas.server.reactive.WebFluxLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.reactive.WebFluxLinkBuilder.methodOn;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/api/v1/Ventas")
@@ -30,18 +30,13 @@ public class VentasController {
         if (venta == null || venta.getId() == null) {
             return Mono.just(venta);
         }
-        return linkTo(methodOn(VentasController.class).obtenerVentaPorId(venta.getId()))
-                .withSelfRel()
-                .toMono()
-                .flatMap(selfLink -> linkTo(methodOn(VentasController.class).listarVentas())
-                        .withRel("listar_ventas")
-                        .toMono()
-                        .map(listLink -> {
-                            venta.add(selfLink);
-                            venta.add(listLink);
-                            return venta;
-                        }))
-                .defaultIfEmpty(venta);
+        try {
+            venta.add(linkTo(methodOn(VentasController.class).obtenerVentaPorId(venta.getId())).withSelfRel());
+            venta.add(linkTo(methodOn(VentasController.class).listarVentas()).withRel("listar_ventas"));
+        } catch (Exception e) {
+            log.error("Error building links: {}", e.getMessage());
+        }
+        return Mono.just(venta);
     }
 
     @PostMapping("/comprar/{idUsuario}")
