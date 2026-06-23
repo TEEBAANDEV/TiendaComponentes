@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class InvComponentesApplicationTests {
+class  InvComponentesApplicationTests {
 
 	@Mock
 	private InventarioRespository repository;
@@ -29,7 +29,7 @@ class InvComponentesApplicationTests {
 	private InventarioService service;
 
 	@Test
-	void deberiaRetornarListaVaciaCuandoNoHayElementos() {
+	void deberiaRetornarListaVaciaCuandoNoHayNada() {
 		Mockito.when(repository.findAll()).thenReturn(Collections.emptyList());
 
 		List<Inventario> resultado = service.listar();
