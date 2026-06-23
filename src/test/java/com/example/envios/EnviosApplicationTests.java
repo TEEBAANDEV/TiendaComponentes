@@ -30,20 +30,18 @@ class EnviosApplicationTests {
 	private EnvioService service;
 
 	@Test
-	void deberiaRetornarListaVaciaCuandoNoHayElementos() {
+	void deberiaRetornarListaVaciaCuandoEstaVacia() {
 		Mockito.when(repository.findAll()).thenReturn(Collections.emptyList());
 
-		Flux<Envio> resultado = service.listar();
+		List<Envio> resultado = service.listar();
 
 		assertNotNull(resultado);
-		List<Envio> list = resultado.collectList().block();
-		assertNotNull(list);
-		assertEquals(0, list.size());
+		assertEquals(0, resultado.size());
 		verify(repository).findAll();
 	}
 	@Test
 	@DisplayName("Debería retornar los envíos almacenados cuando existen elementos en el sistema")
-	void deberiaRetornarListaConElementosCuandoExistenEnvios() {
+	void deberiaRetornarListaConEnviosCuandoExistenEnvios() {
 
 		Envio envioMock = new Envio();
 		envioMock.setId(1L);
@@ -53,15 +51,12 @@ class EnviosApplicationTests {
 		List<Envio> listaSimulada = List.of(envioMock);
 		Mockito.when(repository.findAll()).thenReturn(listaSimulada);
 
-		Flux<Envio> resultado = service.listar();
+		List<Envio> resultado = service.listar();
 
 		assertNotNull(resultado);
-		List<Envio> listaFinal = resultado.collectList().block();
-
-		assertNotNull(listaFinal);
-		assertEquals(1, listaFinal.size(), "La lista debería contener exactamente un envío");
-		assertEquals("EN_TRANSITO", listaFinal.get(0).getEstadoEnvio());
-		assertEquals("Av. Vitacura 1234, Santiago", listaFinal.get(0).getDireccionDestino());
+		assertEquals(1, resultado.size(), "La lista debería contener exactamente un envío");
+		assertEquals("EN_TRANSITO", resultado.get(0).getEstadoEnvio());
+		assertEquals("Av. Vitacura 1234, Santiago", resultado.get(0).getDireccionDestino());
 		verify(repository, Mockito.times(1)).findAll();
 	}
 
