@@ -1,7 +1,8 @@
-package com.example.componentesv2.service;
+package com.example.componentesv2;
 
 import com.example.componentesv2.model.Producto;
 import com.example.componentesv2.repository.ProductoRepository;
+import com.example.componentesv2.service.ProductoService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
