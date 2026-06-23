@@ -29,7 +29,7 @@ class VentasApplicationTests {
 	private VentaService service;
 
 	@Test
-	void deberiaRetornarListaVaciaCuandoNoHayElementos() {
+	void deberiaRetornarListaVaciaCuandoNoHayNada() {
 		when(repository.findAll()).thenReturn(Collections.emptyList());
 
 		List<Venta> resultado = service.obtenerVentas();
