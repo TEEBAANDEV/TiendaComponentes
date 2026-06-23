@@ -13,13 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.hateoas.server.reactive.WebFluxLinkBuilder;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
-import static org.springframework.hateoas.server.reactive.WebFluxLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.reactive.WebFluxLinkBuilder.methodOn;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/api/v1/reportes")
@@ -32,14 +32,13 @@ public class ReporteController {
     private final ReciboClient reciboClient;
 
     private Mono<Reporte> agregarEnlaces(Reporte reporte) {
-        return linkTo(methodOn(ReporteController.class).obtener(reporte.getId()))
-                .withSelfRel()
-                .toMono()
-                .map(reporte::add)
-                .flatMap(r -> linkTo(methodOn(ReporteController.class).listar())
-                        .withRel("reportes")
-                        .toMono()
-                        .map(r::add));
+        try {
+            reporte.add(linkTo(methodOn(ReporteController.class).obtener(reporte.getId())).withSelfRel());
+            reporte.add(linkTo(methodOn(ReporteController.class).listar()).withRel("reportes"));
+        } catch (Exception e) {
+            log.error("Error building links: {}", e.getMessage());
+        }
+        return Mono.just(reporte);
     }
 
     @GetMapping
