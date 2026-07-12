@@ -4,6 +4,8 @@ import com.example.reportes.client.ReciboClient;
 import com.example.reportes.model.Reporte;
 import com.example.reportes.servicio.ReporteService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -43,7 +45,12 @@ public class ReporteController {
 
     @GetMapping
     @Operation(summary = "Listar todos los reportes", description = "Retorna la lista de todos los reportes de ventas registrados con HATEOAS")
-    @ApiResponse(responseCode = "200", description = "Listado obtenido correctamente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Listado de reportes obtenido correctamente",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Reporte.class))),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor al recuperar el listado reactivo")
+    })
     public Flux<Reporte> listar(){
         log.info("Listando todos los reportes");
         return service.findAll().flatMap(this::agregarEnlaces);
@@ -51,9 +58,14 @@ public class ReporteController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Obtener un reporte por ID", description = "Busca un reporte en el sistema y le asocia enlaces HATEOAS")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Reporte encontrado"),
-        @ApiResponse(responseCode = "404", description = "Reporte no encontrado")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Reporte encontrado y recuperado con éxito",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Reporte.class,
+                                    example = "{\"id\": 1, \"idRecibo\": 45, \"nombre\": \"Reporte de Venta - Recibo #45\", \"descripcion\": \"Venta del usuario 10, Detalle: 1x Teclado Mecánico\", \"tipoReporte\": \"Venta_Cliente\", \"estado\": \"ACTIVO\"}"))),
+            @ApiResponse(responseCode = "400", description = "ID de reporte inválido o con formato incorrecto"),
+            @ApiResponse(responseCode = "404", description = "El reporte con el ID especificado no existe en la base de datos"),
+            @ApiResponse(responseCode = "500", description = "Error interno al procesar la búsqueda del registro")
     })
     public Mono<Reporte> obtener(@PathVariable Long id){
         log.info("Buscando reporte con ID: {}", id);
@@ -62,9 +74,13 @@ public class ReporteController {
 
     @PostMapping("/generar/{idRecibo}")
     @Operation(summary = "Generar un nuevo reporte", description = "Genera un reporte de venta basado en el ID de un recibo existente")
-    @ApiResponses({
-        @ApiResponse(responseCode = "201", description = "Reporte generado correctamente"),
-        @ApiResponse(responseCode = "500", description = "Error interno al generar el reporte")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Reporte de auditoría generado y guardado correctamente",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Reporte.class,
+                                    example = "{\"id\": 1, \"idRecibo\": 45, \"nombre\": \"Reporte de Venta - Recibo #45\", \"descripcion\": \"Venta del usuario 10, Detalle: 1x Teclado Mecánico\", \"tipoReporte\": \"Venta_Cliente\", \"estado\": \"ACTIVO\"}"))),
+            @ApiResponse(responseCode = "404", description = "El ID del recibo especificado no fue encontrado en el sistema remoto"),
+            @ApiResponse(responseCode = "500", description = "Error interno o falla en la comunicación al generar el reporte")
     })
     public Mono<ResponseEntity<Reporte>> crearReporte(@PathVariable Long idRecibo){
         log.info("Generando reporte para el recibo ID: {}", idRecibo);
@@ -91,7 +107,11 @@ public class ReporteController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Eliminar un reporte", description = "Elimina de la base de datos el reporte con el ID provisto")
-    @ApiResponse(responseCode = "204", description = "Reporte eliminado con éxito")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Reporte eliminado con éxito (Sin Contenido)"),
+            @ApiResponse(responseCode = "404", description = "El ID del reporte especificado no existe"),
+            @ApiResponse(responseCode = "500", description = "Error interno al intentar eliminar el registro")
+    })
     public Mono<Void> eliminar(@PathVariable Long id){
         log.info("Eliminando reporte con ID: {}", id);
         return service.deleteById(id);
