@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider"><![CDATA[{
+  "isMigrated": true
+}]]></component>
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/Envios/pom.xml" />
+        <option value="$PROJECT_DIR$/Recibo/pom.xml" />
+        <option value="$PROJECT_DIR$/Ventas/pom.xml" />
+        <option value="$PROJECT_DIR$/Carrito/pom.xml" />
+        <option value="$PROJECT_DIR$/Usuario/pom.xml" />
+        <option value="$PROJECT_DIR$/Reportes/pom.xml" />
+        <option value="$PROJECT_DIR$/Wishlist/pom.xml" />
+        <option value="$PROJECT_DIR$/Productos/pom.xml" />
+        <option value="$PROJECT_DIR$/Inventario/pom.xml" />
+        <option value="$PROJECT_DIR$/api-gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/Comentarios/pom.xml" />
+        <option value="$PROJECT_DIR$/eureka-server/pom.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="openjdk-26" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+</project>

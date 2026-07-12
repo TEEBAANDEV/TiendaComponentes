@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Annotation profile for ms-users" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.44/lombok-1.18.44.jar" />
+        </processorPath>
+        <module name="ms-users" />
+      </profile>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="api-gateway" />
+        <module name="eureka-server" />
+      </profile>
+      <profile name="Annotation profile for analitica" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.46/lombok-1.18.46.jar" />
+        </processorPath>
+        <module name="recibo" />
+        <module name="analitica" />
+        <module name="inv_cliente (1)" />
+        <module name="inv_componentes" />
+        <module name="ventas" />
+        <module name="reportes" />
+        <module name="componentesv2" />
+        <module name="envios" />
+        <module name="inv_cliente" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="analitica" options="-parameters" />
+      <module name="api-gateway" options="-parameters" />
+      <module name="componentesv2" options="-parameters" />
+      <module name="envios" options="-parameters" />
+      <module name="eureka-server" options="-parameters" />
+      <module name="inv_cliente" options="-parameters" />
+      <module name="inv_cliente (1)" options="-parameters" />
+      <module name="inv_componentes" options="-parameters" />
+      <module name="ms-users" options="-parameters" />
+      <module name="recibo" options="-parameters" />
+      <module name="reportes" options="-parameters" />
+      <module name="ventas" options="-parameters" />
+    </option>
+  </component>
+</project>
