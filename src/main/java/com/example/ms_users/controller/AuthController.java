@@ -3,6 +3,8 @@ package com.example.ms_users.controller;
 import com.example.ms_users.model.User;
 import com.example.ms_users.security.jwt.JwtService;
 import com.example.ms_users.service.UserService;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
@@ -33,9 +35,16 @@ public class AuthController {
 
     @Operation(summary = "Registrar un nuevo usuario", description = "Crea una nueva cuenta de usuario en el sistema con rol especificado.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuario registrado correctamente"),
-            @ApiResponse(responseCode = "400", description = "Solicitud incorrecta, campos faltantes o inválidos"),
-            @ApiResponse(responseCode = "409", description = "Conflicto, el usuario ya existe")
+            @ApiResponse(responseCode = "200", description = "Usuario registrado correctamente",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(example = "{\"message\": \"Usuario registrado correctamente\", \"role\": \"USER\"}"))),
+            @ApiResponse(responseCode = "400", description = "Solicitud incorrecta, campos faltantes o inválidos",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(example = "{\"error\": \"Username y password son requeridos\"}"))),
+            @ApiResponse(responseCode = "409", description = "Conflicto, el usuario ya existe",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(example = "{\"error\": \"El usuario ya existe\"}"))),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor al intentar registrar")
     })
     @PostMapping("/register")
     public ResponseEntity<?> register(
@@ -78,8 +87,12 @@ public class AuthController {
 
     @Operation(summary = "Iniciar sesión", description = "Autentica al usuario y retorna un token JWT válido.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Sesión iniciada correctamente, retorna token JWT"),
-            @ApiResponse(responseCode = "401", description = "Credenciales incorrectas o usuario no encontrado"),
+            @ApiResponse(responseCode = "200", description = "Sesión iniciada correctamente, retorna token JWT",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(example = "{\"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\", \"username\": \"john_doe\", \"role\": \"USER\"}"))),
+            @ApiResponse(responseCode = "401", description = "Credenciales incorrectas o usuario no encontrado",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(example = "{\"error\": \"Usuario o contraseña incorrectos\"}"))),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @PostMapping("/login")
@@ -128,8 +141,13 @@ public class AuthController {
 
     @Operation(summary = "Validar token JWT", description = "Verifica si el token enviado es válido y no ha expirado.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Token válido"),
-            @ApiResponse(responseCode = "401", description = "Token inválido o expirado")
+            @ApiResponse(responseCode = "200", description = "Token válido",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(example = "{\"valid\": true}"))),
+            @ApiResponse(responseCode = "401", description = "Token inválido o expirado",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(example = "{\"valid\": false, \"error\": \"Token expirado o corrupto\"}"))),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping("/validate")
     public ResponseEntity<?> validateToken() {
