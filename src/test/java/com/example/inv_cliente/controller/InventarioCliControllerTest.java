@@ -39,10 +39,14 @@ class InventarioCliControllerTest {
 
     @MockitoBean
     private InventarioCliService service;
+
     @DisplayName("Deberia listar los elementos disponibles")
     @Test
     void deberiaListarElementos() {
+        // Given
         when(service.listar()).thenReturn(Collections.emptyList());
+
+        // When & Then
         webTestClient.get()
                 .uri("/api/v1/carrito")
                 .exchange()
@@ -50,9 +54,11 @@ class InventarioCliControllerTest {
                 .expectBodyList(Inventario_cliente.class)
                 .hasSize(0);
     }
+
     @DisplayName("Deberia agregar los items al carrito")
     @Test
     void deberiaAgregarItemsAlCarrito() {
+        // Given
         Inventario_cliente item = new Inventario_cliente();
         item.setIdUsuario(1L);
         item.setIdProducto(10L);
@@ -67,6 +73,7 @@ class InventarioCliControllerTest {
         user.setId(1L);
         user.setUsername("testuser");
 
+        // When & Then
         when(productoClient.obtenerProducto(10L)).thenReturn(Mono.just(producto));
         when(usuarioClient.obtenerUsuario(1L)).thenReturn(Mono.just(user));
         when(service.agregarAlCarrito(any(Inventario_cliente.class))).thenReturn(Mono.just(item));
@@ -80,8 +87,10 @@ class InventarioCliControllerTest {
                 .hasSize(1);
     }
     @DisplayName("Deberia mostrar el carrito de un usuario")
+
     @Test
     void deberiaVerCarritoDeUsuario() {
+        // Given
         Long idUsuario = 1L;
         Inventario_cliente item = new Inventario_cliente();
         item.setId(1L);
@@ -89,6 +98,7 @@ class InventarioCliControllerTest {
         item.setIdProducto(10L);
         item.setCantidad(2);
 
+        // When & Then
         when(service.obtenerCarritoPorUsuario(idUsuario)).thenReturn(Collections.singletonList(item));
 
         webTestClient.get()
@@ -102,21 +112,25 @@ class InventarioCliControllerTest {
     @DisplayName("Elimina un item del carrito")
     @Test
     void deberiaEliminarItemDelCarrito() {
+        // Given
         Long idItem = 5L;
         doNothing().when(service).eliminarDelCarrito(idItem);
 
+        // When & Then
         webTestClient.delete()
                 .uri("/api/v1/carrito/" + idItem)
                 .exchange()
                 .expectStatus().isNoContent();
     }
-    @DisplayName("Debería hacia el carrito del usario al completo")
+
+    @DisplayName("Debería vaciar el carrito del usario al completo")
     @Test
     void deberiaVaciarCarritoDeUsuario() {
-
+        // Given
         Long idUsuario = 1L;
         doNothing().when(service).vaciarCarritoPorUsuario(idUsuario);
 
+        // When & Then
         webTestClient.delete()
                 .uri("/api/v1/carrito/usuario/" + idUsuario)
                 .exchange()
