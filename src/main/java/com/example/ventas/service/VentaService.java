@@ -7,7 +7,7 @@ import com.example.ventas.client.ProductoClient;
 import com.example.ventas.client.UserClient;
 import com.example.ventas.model.CarritoDTO;
 import com.example.ventas.model.DetalleVenta;
-import com.example.ventas.model.ProductoDTO;
+
 import com.example.ventas.model.Venta;
 import com.example.ventas.respository.VentaRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -65,19 +65,20 @@ public class VentaService {
                                         .estado("PAGADO")
                                         .detalles(detallesCompletos)
                                         .build();
-                                Venta ventaGuardada = repository.save(venta);
+
+
                                 return Flux.fromIterable(items)
                                         .flatMap(item -> inventarioClient.descontarStock(item.getIdProducto(), item.getCantidad()))
                                         .collectList()
                                         .flatMap(ignorado -> carritoClient.vaciarCarrito(idUsuario))
-                                        .thenReturn(ventaGuardada)
-                                        .doOnSuccess(v -> System.out.println("Stock descontado y carrito vaciado con exito"))
-                                        .onErrorResume(e -> {
-                                            System.err.println("Error en segundo plano: " + e.getMessage());
-                                            return Mono.just(ventaGuardada);
+                                        .flatMap(ignorado -> {
+                                            return Mono.fromCallable(() -> repository.save(venta))
+                                                    .subscribeOn(reactor.core.scheduler.Schedulers.boundedElastic());
+                                        })
+                                        .doOnNext(venta_Procesada -> System.out.println("Venta procesada, stock descontado y carrito vaciado con exito"));
                                         });
                             });
-                });
+
     }
 
     public List<Venta> obtenerVentas(){
