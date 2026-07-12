@@ -17,7 +17,8 @@ public class InventarioClient {
     private final WebClient webClient;
 
 
-    public InventarioClient(@Qualifier("usuarioWebClient") WebClient webClient){
+    public InventarioClient(@Qualifier("inventarioWebClient") WebClient webClient){
+
         this.webClient = webClient;
     }
 
@@ -27,6 +28,9 @@ public class InventarioClient {
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, response ->
                         Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND,"Stock no disponible en este momento"))
+                )
+                .onStatus(HttpStatusCode::is5xxServerError, response ->
+                        Mono.error(new ResponseStatusException(HttpStatus.BAD_GATEWAY, "El servicio de inventario está caído"))
                 )
                 .bodyToMono(InventarioDTO.class);
     }
