@@ -31,12 +31,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Tag(name = "Controlador de Lista de Deseos", description = "Endpoints para gestionar la lista de deseos de los usuarios")
 public class ListaDeseosController {
 
-    private final ProductoClient productoClient;
-
-    @Autowired
     private final ListaDeseosService service;
-    @Autowired
-    private final UsuarioClient usuarioClient;
+
 
     private Mono<ListaDeseados> addLinks(ListaDeseados item) {
         try {
@@ -56,18 +52,8 @@ public class ListaDeseosController {
     public Flux<ListaDeseados> agregarItems(@Valid @RequestBody List<ListaDeseados> items){
         log.info("Agregando {} items a la lista de deseos", items.size());
         return Flux.fromIterable(items)
-                .flatMap(item ->
-                    Mono.zip(
-                            productoClient.obtenerProducto(item.getIdProducto()),
-                            usuarioClient.obtenerUsuario(item.getIdUsuario())
-                    ).flatMap(tuple2 -> {
-                        Producto producto = tuple2.getT1();
-                        item.setNombreProducto(producto.getNombre());
-                        item.setDescripcionProducto(producto.getDescripcion());
-                        return Mono.fromCallable(() -> service.agregarALista(item))
-                                .subscribeOn(reactor.core.scheduler.Schedulers.boundedElastic());
-                    })
-                ).flatMap(this::addLinks);
+                .flatMap(service::RegistrarItem)
+                .flatMap(this::addLinks);
     }
 
     @GetMapping
