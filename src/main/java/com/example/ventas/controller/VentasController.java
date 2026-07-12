@@ -2,6 +2,8 @@ package com.example.ventas.controller;
 
 import com.example.ventas.model.Venta;
 import com.example.ventas.service.VentaService;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -42,9 +44,14 @@ public class VentasController {
     @PostMapping("/comprar/{idUsuario}")
     @Operation(summary = "Generar compra", description = "Procesa y genera una compra para un usuario")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Compra generada exitosamente"),
-            @ApiResponse(responseCode = "400", description = "Error al procesar la compra")
-    })
+            @ApiResponse(responseCode = "201", description = "Compra generada y procesada exitosamente",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Venta.class,
+                                    example = "{\"id\": 101, \"idUsuario\": 10, \"total\": 25990.0, \"fecha\": \"2026-07-12T15:15:00\", \"estado\": \"PAGADO\", \"detalles\": [{\"nombreProducto\": \"Teclado Mecánico\", \"descripcion\": \"RGB Switch Azul\", \"cantidad\": 1, \"precioUnitario\": 25990.0}]}"))),
+            @ApiResponse(responseCode = "400", description = "Error en la solicitud, carrito vacío o datos inválidos"),
+            @ApiResponse(responseCode = "404", description = "El ID de usuario especificado no existe"),
+            @ApiResponse(responseCode = "422", description = "Error en la transacción: Stock insuficiente en el Inventario remoto"),
+            @ApiResponse(responseCode = "500", description = "Error interno al procesar el flujo de venta") })
     public Mono<ResponseEntity<Object>> generarCompra(@PathVariable Long idUsuario) {
         log.info("Procesando compra para el usuario con ID: {}", idUsuario);
         return ventaService.procesarVenta(idUsuario)
@@ -59,8 +66,10 @@ public class VentasController {
     @GetMapping
     @Operation(summary = "Listar ventas", description = "Obtiene la lista completa de todas las ventas")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista de ventas obtenida exitosamente")
-    })
+            @ApiResponse(responseCode = "200", description = "Lista histórica de ventas recuperada con éxito",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Venta.class))),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor al recuperar el listado")   })
     public Flux<Venta> listarVentas(){
         log.info("Solicitud para listar todas las ventas recibida");
         return Flux.fromIterable(ventaService.obtenerVentas())
@@ -68,9 +77,11 @@ public class VentasController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Eliminar venta", description = "Elimina una venta por su ID")
+    @Operation(summary = "Eliminar venta", description = "Elimina de forma permanente el registro de una venta física usando su ID único.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Venta eliminada exitosamente")
+            @ApiResponse(responseCode = "204", description = "Registro de venta eliminado exitosamente (Sin Contenido)"),
+            @ApiResponse(responseCode = "404", description = "El ID de la venta especificada no existe en los registros"),
+            @ApiResponse(responseCode = "500", description = "Error interno al intentar eliminar el registro")
     })
     public Mono<ResponseEntity<Void>> eliminarVenta(@PathVariable Long id){
         log.info("Eliminando venta con ID: {}", id);
@@ -81,9 +92,12 @@ public class VentasController {
     @GetMapping("/{id}")
     @Operation(summary = "Obtener venta por ID", description = "Obtiene una venta específica según su ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Venta encontrada exitosamente"),
-            @ApiResponse(responseCode = "404", description = "Venta no encontrada")
-    })
+            @ApiResponse(responseCode = "200", description = "Registro de venta localizado exitosamente",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Venta.class,
+                                    example = "{\"id\": 101, \"idUsuario\": 10, \"total\": 25990.0, \"fecha\": \"2026-07-12T15:15:00\", \"estado\": \"PAGADO\"}"))),
+            @ApiResponse(responseCode = "404", description = "Venta no encontrada para el ID proporcionado"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")   })
     public Mono<ResponseEntity<Venta>> obtenerVentaPorId(@PathVariable Long id){
         log.info("Buscando venta con ID: {}", id);
         return Mono.justOrEmpty(ventaService.obtenerVentaPorId(id))
@@ -96,7 +110,8 @@ public class VentasController {
     @Operation(summary = "Actualizar estado de venta", description = "Actualiza el estado de una venta existente")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Estado actualizado exitosamente"),
-            @ApiResponse(responseCode = "404", description = "Venta no encontrada")
+            @ApiResponse(responseCode = "404", description = "Venta no encontrada"),
+            @ApiResponse(responseCode = "500", description = "Error interno al intentar actualizar")
     })
     public Mono<ResponseEntity<Venta>> actualizarEstado(@PathVariable Long id, @RequestParam String nuevoEstado){
         log.info("Actualizando estado de venta ID: {} a {}", id, nuevoEstado);
