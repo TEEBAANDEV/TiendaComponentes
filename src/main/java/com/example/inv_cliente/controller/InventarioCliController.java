@@ -59,18 +59,7 @@ public class InventarioCliController {
     public Mono<ResponseEntity<List<Inventario_cliente>>> agregarItems(@Valid @RequestBody List<Inventario_cliente> items){
         log.info("Agregando lote de {} ítems al carrito", items.size());
         return Flux.fromIterable(items)
-                .flatMap(item ->
-                    Mono.zip(
-                            productoClient.obtenerProducto(item.getIdProducto()),
-                            usuarioClient.obtenerUsuario(item.getIdUsuario())
-                    ).flatMap(tuple2 -> {
-                        Producto producto = tuple2.getT1();
-                        item.setNombreProducto(producto.getNombre());
-                        item.setDescripcionProducto(producto.getDescripcion());
-                        return Mono.fromCallable(() -> service.agregarAlCarrito(item))
-                                .subscribeOn(reactor.core.scheduler.Schedulers.boundedElastic());
-                    })
-                )
+                .flatMap(service::RegistrarItem)
                 .flatMap(this::agregarLinks)
                 .collectList()
                 .map(resultado -> ResponseEntity.status(HttpStatus.CREATED).body(resultado));

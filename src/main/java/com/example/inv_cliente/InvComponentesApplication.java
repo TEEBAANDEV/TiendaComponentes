@@ -8,16 +8,6 @@ public class
 
 
 
-
-
-
-
-
-
-
-
-
-
 InvComponentesApplication {
 
 	public static void main(String[] args) {

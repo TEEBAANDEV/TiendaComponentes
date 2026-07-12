@@ -69,7 +69,7 @@ class InventarioCliControllerTest {
 
         when(productoClient.obtenerProducto(10L)).thenReturn(Mono.just(producto));
         when(usuarioClient.obtenerUsuario(1L)).thenReturn(Mono.just(user));
-        when(service.agregarAlCarrito(any(Inventario_cliente.class))).thenReturn(item);
+        when(service.agregarAlCarrito(any(Inventario_cliente.class))).thenReturn(Mono.just(item));
         webTestClient.post()
                 .uri("/api/v1/carrito/lote")
                 .contentType(MediaType.APPLICATION_JSON)
