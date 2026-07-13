@@ -3,23 +3,24 @@ package com.example.inv_cliente.controller;
 import com.example.inv_cliente.client.ProductoClient;
 import com.example.inv_cliente.client.UsuarioClient;
 import com.example.inv_cliente.model.Inventario_cliente;
+import com.example.inv_cliente.model.Producto;
 import com.example.inv_cliente.service.InventarioCliService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import java.util.List;
 
@@ -50,29 +51,35 @@ public class InventarioCliController {
         }
         return Mono.just(item);
     }
+
     @PostMapping("/lote")
-    @Operation(summary = "Agregar ítems al carrito", description = "Agrega ítems al carrito de compras validando la existencia de los productos y de los usuarios.")
+    @Operation(summary = "Agregar lote de ítems al carrito", description = "Agrega múltiples ítems al carrito de compras validando la existencia de los productos y de los usuarios.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "ítems agregado exitosamente al carrito",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Inventario_cliente.class,
-                                    example = "[{\"id\": 1, \"idUsuario\": 10, \"idProducto\": 5, \"cantidad\": 2, \"nombreProducto\": \"Teclado Mecánico\"}]"))),
-            @ApiResponse(responseCode = "400", description = "Datos de entrada no válidos o error en la validación"),
+            @ApiResponse(responseCode = "201", description = "Lote de ítems agregado exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Datos de entrada no válidos"),
             @ApiResponse(responseCode = "404", description = "Usuario o Producto especificado no encontrado"),
             @ApiResponse(responseCode = "500", description = "Error interno al procesar los items")
-    })
 
-    public Mono<ResponseEntity<List<Inventario_cliente>>> agregarItems(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Lista de ítems a registrar",
-                    content = @Content(schema = @Schema(implementation = Inventario_cliente.class,
-                            example = "[{\"idUsuario\": 10, \"idProducto\": 5, \"cantidad\": 2, \"nombreProducto\": \"Teclado Mecánico\"}]")))
-            @Valid @RequestBody List<Inventario_cliente> items){
+    })
+    public Mono<ResponseEntity<List<Inventario_cliente>>> agregarItems(@Valid @RequestBody List<Inventario_cliente> items){
         log.info("Agregando lote de {} ítems al carrito", items.size());
         return Flux.fromIterable(items)
-                .flatMap(service:: agregarAlCarrito)
+                .flatMap(item ->
+                        Mono.zip(
+                                productoClient.obtenerProducto(item.getIdProducto()),
+                                usuarioClient.obtenerUsuario(item.getIdUsuario())
+                        ).flatMap(tuple2 -> {
+                            Producto producto = tuple2.getT1();
+                            item.setNombreProducto(producto.getNombre());
+                            item.setDescripcionProducto(producto.getDescripcion());
+                            return Mono.fromCallable(() -> service.agregarAlCarrito(item))
+                                    .subscribeOn(reactor.core.scheduler.Schedulers.boundedElastic());
+                        })
+                )
                 .flatMap(this::agregarLinks)
                 .collectList()
-                .map(resultado -> ResponseEntity.status(HttpStatus.CREATED).body(resultado)); }
+                .map(resultado -> ResponseEntity.status(HttpStatus.CREATED).body(resultado));
+    }
 
     @GetMapping
     @Operation(
@@ -80,10 +87,8 @@ public class InventarioCliController {
             description = "Retorna una lista con todos los ítems de carrito registrados."
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Operación exitosa",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Inventario_cliente.class))),
-            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    @ApiResponse(responseCode = "200", description = "Operación exitosa"),
+    @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     public ResponseEntity<List<Inventario_cliente>> listar() {
 
@@ -114,19 +119,17 @@ public class InventarioCliController {
             description = "Retorna todos los ítems del carrito pertenecientes a un usuario."
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Carrito del usuario recuperado exitosamente",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Inventario_cliente.class,
-                                    example = "[{\"id\": 1, \"idUsuario\": 10, \"idProducto\": 5, \"cantidad\": 2, \"nombreProducto\": \"Teclado Mecánico\"}]"))),
-            @ApiResponse(responseCode = "404", description = "Usuario no encontrado o sin carrito activo"),
-            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    @ApiResponse(responseCode = "200", description = "Operación exitosa"),
+    @ApiResponse(responseCode = "404", description = "Usuario no encontrado o sin carrito activo"),
+    @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     public ResponseEntity<List<Inventario_cliente>> verCarrito(
             @PathVariable Long idUsuario) {
 
         log.info("Obteniendo el carrito para el usuario con ID: {}", idUsuario);
 
-        List<Inventario_cliente> items = service.obtenerCarritoPorUsuario(idUsuario);
+        List<Inventario_cliente> items =
+                service.obtenerCarritoPorUsuario(idUsuario);
 
         items.forEach(item -> {
             item.add(
@@ -148,10 +151,12 @@ public class InventarioCliController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar un ítem del carrito", description = "Elimina del carrito el ítem especificado por el ID.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Ítem eliminado correctamente (Sin Contenido)"), // CORREGIDO: De 244 a 204
-            @ApiResponse(responseCode = "404", description = "El ítem con el ID especificado no existe en el carrito"),
-            @ApiResponse(responseCode = "500", description = "Error interno al procesar la eliminación")
+    @ApiResponse(responseCode = "204", description = "Ítem eliminado correctamente (sin contenido)"),
+    @ApiResponse(responseCode = "404", description = "El ítem con el ID especificado no existe en el carrito"),
+    @ApiResponse(responseCode = "500", description = "Error interno al procesar la eliminación")
+
     })
+
     public Mono<ResponseEntity<Void>> eliminarItem(@PathVariable Long id){
         log.info("Eliminando ítem del carrito con ID: {}", id);
         return Mono.fromRunnable(() -> service.eliminarDelCarrito(id))
@@ -162,7 +167,7 @@ public class InventarioCliController {
     @DeleteMapping("/usuario/{idUsuario}")
     @Operation(summary = "Vaciar el carrito de un usuario", description = "Elimina todos los ítems de carrito para el usuario especificado.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Carrito vaciado correctamente (Sin Contenido)"),
+    @ApiResponse(responseCode = "204", description = "Carrito vaciado correctamente (sin contenido)"),
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
             @ApiResponse(responseCode = "500", description = "Error interno al vaciar el carrito")
     })

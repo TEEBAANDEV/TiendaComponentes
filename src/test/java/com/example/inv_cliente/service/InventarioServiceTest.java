@@ -1,9 +1,7 @@
 package com.example.inv_cliente.service;
 
 
-import com.example.inv_cliente.client.InventarioClient;
 import com.example.inv_cliente.model.Inventario_cliente;
-import com.example.inv_cliente.model.InventarioDTO;
 import com.example.inv_cliente.repository.InventarioCliRespository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
