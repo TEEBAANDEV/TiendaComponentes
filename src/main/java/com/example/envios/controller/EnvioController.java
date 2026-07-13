@@ -6,8 +6,6 @@ import com.example.envios.client.UsuarioClient;
 import com.example.envios.model.Envio;
 import com.example.envios.model.ReciboDTO;
 import com.example.envios.model.UsuarioDTO;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,10 +35,10 @@ public class EnvioController {
 
     @Autowired
     private final EnvioService service;
-    
+
     @Autowired
     private final ReciboClient reciboClient;
-    
+
     @Autowired
     private final UsuarioClient usuarioClient;
 
@@ -71,10 +69,9 @@ public class EnvioController {
             description = "Obtiene la lista completa de todos los envíos registrados"
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista de envíos recuperada exitosamente",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Envio.class))),
+            @ApiResponse(responseCode = "200", description = "Lista de envíos recuperada exitosamente"),
             @ApiResponse(responseCode = "500", description = "Error interno al recuperar el histórico de despachos")
+
     })
     public ResponseEntity<List<Envio>> listar() {
 
@@ -106,12 +103,9 @@ public class EnvioController {
             description = "Obtiene los detalles de un envío específico según su ID"
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Envío encontrado exitosamente",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Envio.class,
-                                    example = "{\"id\": 1, \"idRecibo\": 45, \"idUsuario\": 10, \"direccionDestino\": \"Av. Vicuña Mackenna 4835, Macul\", \"empresaTransporte\": \"Starken\", \"codigoSeguimiento\": \"a2b3c4d5-e6f7...\", \"estadoEnvio\": \"PROCESANDO_LOGISTICA\", \"fechaDespacho\": \"2026-07-12T17:34:00\"}"))),
+            @ApiResponse(responseCode = "200", description = "Envío encontrado exitosamente"),
             @ApiResponse(responseCode = "400", description = "El formato de ID ingresado no es válido"),
-            @ApiResponse(responseCode = "404", description = "El envío solicitado no existe en los registros"),
+            @ApiResponse(responseCode = "404", description = "Envío no encontrado"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     public ResponseEntity<Envio> buscarPorId(@PathVariable Long id) {
@@ -141,13 +135,10 @@ public class EnvioController {
     @PostMapping("/generar/{idRecibo}")
     @Operation(summary = "Despachar envío", description = "Genera y registra el envío a partir del ID de un recibo existente")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Envío generado y puesto en tránsito exitosamente",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Envio.class,
-                                    example = "{\"id\": 1, \"idRecibo\": 45, \"idUsuario\": 10, \"direccionDestino\": \"Av. Vicuña Mackenna 4835, Macul\", \"empresaTransporte\": \"Starken\", \"codigoSeguimiento\": \"a2b3c4d5-e6f7...\", \"estadoEnvio\": \"PROCESANDO_LOGISTICA\", \"fechaDespacho\": \"2026-07-12T17:34:00\"}"))),
-            @ApiResponse(responseCode = "404", description = "El recibo o el perfil de usuario asociado no fueron encontrados"),
+            @ApiResponse(responseCode = "201", description = "Envío generado exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Recibo o dirección de usuario no encontrada"),
             @ApiResponse(responseCode = "500", description = "Error interno al procesar los datos de despacho"),
-            @ApiResponse(responseCode = "503", description = "Servicio de mensajería o base de datos temporalmente no disponible")
+            @ApiResponse(responseCode = "503", description = "Servicio no disponible debido a un error")
     })
     public ResponseEntity<Envio> despacharenvio(@PathVariable Long idRecibo) {
 
@@ -172,7 +163,7 @@ public class EnvioController {
             envio.setIdUsuario(reciboDTO.getIdUsuario());
             envio.setDireccionDestino(usuario.getDireccion());
 
-
+            // 👇 lógica real (ejemplo)
             envio.setEmpresaTransporte("Starken");
             envio.setCodigoSeguimiento(UUID.randomUUID().toString());
             envio.setEstadoEnvio("PROCESANDO_LOGISTICA");
