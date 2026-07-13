@@ -4,8 +4,6 @@ import com.example.inv_componentes.client.ProductoClient;
 import com.example.inv_componentes.model.Inventario;
 import com.example.inv_componentes.model.Producto;
 import com.example.inv_componentes.service.InventarioService;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -37,28 +35,20 @@ public class InventarioController {
     @Autowired
     private final InventarioService service;
 
-
-
     @PostMapping
     @Operation(summary = "Crear inventario", description = "Crea un registro de inventario para un producto si este existe.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Registro de inventario creado exitosamente",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Inventario.class,
-                                    example = "{\"idInventario\": 1, \"idProducto\": 102, \"nombreProducto\": \"Mouse Gamer Wireless\", \"descripcion\": \"Mouse óptico 16000 DPI\", \"stockActual\": 50}"))),
+            @ApiResponse(responseCode = "201", description = "Inventario creado exitosamente"),
             @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos o fallas en la validación del esquema"),
-            @ApiResponse(responseCode = "404", description = "Producto no encontrado en el microservicio externo o error en la vinculación"),
-            @ApiResponse(responseCode = "500", description = "Error interno del servidor al procesar la persistencia")
+            @ApiResponse(responseCode = "404", description = "Producto no encontrado")
     })
     public ResponseEntity<Inventario> crearInventario(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Datos para el alta de inventario",
-                    content = @Content(schema = @Schema(implementation = Inventario.class,
-                            example = "{\"idProducto\": 102, \"stockActual\": 50}")))
             @Valid @RequestBody Inventario inventario) {
 
         log.info("Creando inventario para el producto: {}", inventario.getIdProducto());
 
         try {
+
             Producto producto = productoClient
                     .obtenerProducto(inventario.getIdProducto())
                     .block();
@@ -89,7 +79,10 @@ public class InventarioController {
                     .body(guardado);
 
         } catch (Exception e) {
-            log.error("Error al crear inventario o producto no encontrado: {}", e.getMessage());
+
+            log.error("Error al crear inventario o producto no encontrado: {}",
+                    e.getMessage());
+
             return ResponseEntity.notFound().build();
         }
     }
@@ -97,10 +90,8 @@ public class InventarioController {
     @GetMapping
     @Operation(summary = "Listar inventario", description = "Obtiene todos los registros de inventario con información de los productos.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista de inventario obtenida exitosamente",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Inventario.class))),
-            @ApiResponse(responseCode = "500", description = "Error interno al recuperar el listado general de almacén")
+    @ApiResponse(responseCode = "200", description = "Lista de inventario obtenida exitosamente"),
+    @ApiResponse(responseCode = "500", description = "Error interno al recuperar el listado general de almacén")
     })
     public ResponseEntity<List<Inventario>> listar() {
 
@@ -137,10 +128,10 @@ public class InventarioController {
     @PutMapping("/descontar")
     @Operation(summary = "Descontar stock", description = "Descuenta una cantidad específica de stock de un producto.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Stock descontado exitosamente (Sin Cuerpo)"),
-            @ApiResponse(responseCode = "400", description = "Cantidad a descontar inválida o saldo insuficiente en bodega"),
-            @ApiResponse(responseCode = "404", description = "El ID del producto no registra entradas de inventario activas"),
-            @ApiResponse(responseCode = "500", description = "Error interno al procesar la actualización de stock")
+    @ApiResponse(responseCode = "200", description = "Stock descontado exitosamente"),
+    @ApiResponse(responseCode = "400", description = "Cantidad a descontar inválida o saldo insuficiente en bodega"),
+    @ApiResponse(responseCode = "404", description = "El ID del producto no registra entradas de inventario activas"),
+    @ApiResponse(responseCode = "500", description = "Error interno al procesar la actualización de stock")
     })
     public ResponseEntity<Void> descontarStock(@RequestParam Long idProducto, @RequestParam int cantidad){
         log.info("Descontando stock para producto: {}, cantidad: {}", idProducto, cantidad);
