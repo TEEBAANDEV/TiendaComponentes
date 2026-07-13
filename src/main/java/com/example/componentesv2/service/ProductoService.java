@@ -14,6 +14,10 @@ public class ProductoService {
     @Autowired
     private ProductoRepository repository;
 
+    public ProductoService(ProductoRepository repository){
+        this.repository = repository;
+    }
+
     public List<Producto> listar(){
         return repository.findAll();
     }

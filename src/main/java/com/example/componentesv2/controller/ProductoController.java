@@ -1,9 +1,8 @@
+
 package com.example.componentesv2.controller;
 
 import com.example.componentesv2.model.Producto;
 import com.example.componentesv2.service.ProductoService;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,25 +31,27 @@ public class ProductoController {
     @Autowired
     private ProductoService service;
 
+    public ProductoController(ProductoService service){
+        this.service = service;
+    }
+
     @GetMapping
-    @Operation(summary = "Listar todos los productos", description = "Obtiene una lista con todos los productos registrados.")
+    @Operation(summary = "Listar todos los productos", description = "Obtiene una lista con todos los productos registrados, incluyendo sus enlaces HATEOAS individuales.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista de productos obtenida exitosamente",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Producto.class))),
+            @ApiResponse(responseCode = "200", description = "Lista de productos obtenida exitosamente"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor al recuperar el listado")
     })
     public ResponseEntity<CollectionModel<Producto>> listar() {
         log.info("Petición recibida para listar todos los productos");
         List<Producto> productos = service.listar();
-        
+
         for (Producto producto : productos) {
             producto.add(linkTo(methodOn(ProductoController.class).findById(producto.getId())).withSelfRel());
         }
-        
+
         Link selfLink = linkTo(methodOn(ProductoController.class).listar()).withSelfRel();
         CollectionModel<Producto> result = CollectionModel.of(productos, selfLink);
-        
+
         log.info("Se han listado {} productos con sus respectivos enlaces HATEOAS", productos.size());
         return ResponseEntity.ok(result);
     }
@@ -58,13 +59,11 @@ public class ProductoController {
     @GetMapping("/{id}")
     @Operation(summary = "Buscar producto por ID", description = "Permite obtener los detalles de un producto específico mediante su ID.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Producto localizado con éxito",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Producto.class,
-                                    example = "{\"id\": 5, \"nombre\": \"Memoria RAM 16GB\", \"precio\": 45000.0, \"sku\": \"RAM-16GB-DDR4\"}"))),
+            @ApiResponse(responseCode = "200", description = "Producto encontrado"),
             @ApiResponse(responseCode = "400", description = "ID de producto inválido o mal estructurado"),
-            @ApiResponse(responseCode = "404", description = "El producto con el ID especificado no existe"),
+            @ApiResponse(responseCode = "404", description = "Producto no encontrado"),
             @ApiResponse(responseCode = "500", description = "Error interno al procesar la búsqueda")
+
     })
     public ResponseEntity<Producto> findById(@PathVariable Long id) {
         log.info("Petición recibida para buscar producto con ID: {}", id);
@@ -84,18 +83,12 @@ public class ProductoController {
     @PostMapping
     @Operation(summary = "Agregar un nuevo producto", description = "Permite registrar un nuevo producto en la tienda de componentes.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Producto creado con éxito",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Producto.class,
-                                    example = "{\"id\": 6, \"nombre\": \"Procesador i7\", \"precio\": 280000.0, \"sku\": \"PROC-I7-12GEN\"}"))),
-            @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos o validación de campos fallida"),
+            @ApiResponse(responseCode = "201", description = "Producto creado con éxito"),
+            @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),
             @ApiResponse(responseCode = "500", description = "Error interno al intentar persistir el producto")
+
     })
-    public ResponseEntity<Producto> agregarProducto(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Datos del producto a registrar",
-                    content = @Content(schema = @Schema(implementation = Producto.class,
-                            example = "{\"nombre\": \"Procesador i7\", \"precio\": 280000.0, \"sku\": \"PROC-I7-12GEN\"}")))
-            @Valid @RequestBody Producto producto) {
+    public ResponseEntity<Producto> agregarProducto(@Valid @RequestBody Producto producto) {
         log.info("Petición recibida para agregar un nuevo producto: {}", producto.getNombre());
         Producto nuevoProducto = service.agregarProducto(producto);
 
@@ -109,9 +102,9 @@ public class ProductoController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar un producto", description = "Permite eliminar un producto existente de la base de datos por su ID.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Producto eliminado con éxito (Sin Contenido)"),
+            @ApiResponse(responseCode = "204", description = "Producto eliminado con éxito"),
             @ApiResponse(responseCode = "400", description = "ID de producto inválido"),
-            @ApiResponse(responseCode = "404", description = "El producto con el ID especificado no fue encontrado"),
+            @ApiResponse(responseCode = "404", description = "Producto no encontrado"),
             @ApiResponse(responseCode = "500", description = "Error interno al intentar procesar la eliminación")
     })
     public ResponseEntity<Void> eliminarProducto(@PathVariable Long id) {
