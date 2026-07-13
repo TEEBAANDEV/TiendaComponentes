@@ -7,23 +7,19 @@ import com.example.ventas.client.ProductoClient;
 import com.example.ventas.client.UserClient;
 import com.example.ventas.model.CarritoDTO;
 import com.example.ventas.model.DetalleVenta;
-
+import com.example.ventas.model.ProductoDTO;
 import com.example.ventas.model.Venta;
 import com.example.ventas.respository.VentaRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
-
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +36,6 @@ public class VentaService {
     @Autowired
     private final InventarioClient inventarioClient;
 
-    @Transactional
     public Mono<Venta> procesarVenta(Long idUsuario){
         return userClient.obtenerUsuario(idUsuario)
                 .flatMap(usuario -> carritoClient.obtenerCarritoPorUsuario(idUsuario))
@@ -70,23 +65,19 @@ public class VentaService {
                                         .estado("PAGADO")
                                         .detalles(detallesCompletos)
                                         .build();
-
-
+                                Venta ventaGuardada = repository.save(venta);
                                 return Flux.fromIterable(items)
-                                        .concatMap(item -> inventarioClient.descontarStock(item.getIdProducto(), item.getCantidad())
-                                                // Si falla un descuento remoto, propagamos explícitamente el error para cancelar la transacción
-                                                .onErrorResume(error -> Mono.error(new RuntimeException("Error crítico: Falló el descuento de stock para el producto ID " + item.getIdProducto() + ". Revirtiendo operación.")))
-                                        )
+                                        .flatMap(item -> inventarioClient.descontarStock(item.getIdProducto(), item.getCantidad()))
                                         .collectList()
                                         .flatMap(ignorado -> carritoClient.vaciarCarrito(idUsuario))
-                                        .flatMap(ignorado -> {
-                                            return Mono.fromCallable(() -> repository.save(venta))
-                                                    .subscribeOn(Schedulers.boundedElastic());
-                                        })
-                                        .doOnNext(venta_Procesada -> System.out.println("Venta procesada, stock descontado y carrito vaciado con exito"));
+                                        .thenReturn(ventaGuardada)
+                                        .doOnSuccess(v -> System.out.println("Stock descontado y carrito vaciado con exito"))
+                                        .onErrorResume(e -> {
+                                            System.err.println("Error en segundo plano: " + e.getMessage());
+                                            return Mono.just(ventaGuardada);
+                                        });
                             });
                 });
-
     }
 
     public List<Venta> obtenerVentas(){
@@ -100,7 +91,7 @@ public class VentaService {
     public Optional<Venta> obtenerVentaPorId(Long id){
         return repository.findById(id);
     }
-    @Transactional
+
     public Venta actualizarEstado(Long id, String nuevoEstado){
         return repository.findById(id)
                 .map(venta -> {

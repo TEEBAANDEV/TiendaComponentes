@@ -10,6 +10,6 @@ public class WebCarritoConfig {
 
     @Bean(name = "carritoWebClient")
     public WebClient webClient(){
-         return WebClient.builder().baseUrl("http://localhost:9093/api/v1/carrito").build();
-     }
+        return WebClient.builder().baseUrl("http://localhost:9093/api/v1/carrito").build();
+    }
 }
