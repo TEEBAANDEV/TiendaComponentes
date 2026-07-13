@@ -5,8 +5,6 @@ import com.example.analitica.client.UsuarioClient;
 import com.example.analitica.model.Resena;
 import com.example.analitica.servicio.ResenaService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -49,9 +47,7 @@ public class ResenaController {
             description = "Calcula el promedio de estrellas y el total de votos para un producto dado"
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Promedio calculado exitosamente",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(example = "{\"productoId\": 102, \"promedioEstrellas\": 4.7, \"totalVotos\": 24}"))),
+            @ApiResponse(responseCode = "200", description = "Promedio calculado exitosamente"),
             @ApiResponse(responseCode = "400", description = "ID de producto inválido"),
             @ApiResponse(responseCode = "404", description = "Producto no encontrado en el catálogo"),
             @ApiResponse(responseCode = "500", description = "Error interno al procesar el cálculo estadístico")
@@ -71,9 +67,7 @@ public class ResenaController {
             description = "Retorna todos los comentarios del sistema con enlaces HATEOAS"
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Comentarios obtenidos correctamente",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Resena.class))),
+            @ApiResponse(responseCode = "200", description = "Comentarios obtenidos correctamente"),
             @ApiResponse(responseCode = "500", description = "Error interno al recuperar el listado global")
     })
     public ResponseEntity<List<Resena>> obtenerComentarios() {
@@ -103,17 +97,14 @@ public class ResenaController {
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "Reseña encontrada y retornada con éxito",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Resena.class,
-                                    example = "{\"id\": 1, \"productoId\": 102, \"usuarioId\": 10, \"comentario\": \"Excelente rendimiento y temperaturas.\", \"calificacion\": 5}"))
+                    description = "Reseña encontrada"
             ),
-            @ApiResponse(responseCode = "400", description = "El ID de la reseña provisto tiene un formato incorrecto"),
             @ApiResponse(
                     responseCode = "404",
-                    description = "Reseña no encontrada en los registros"
+                    description = "Reseña no encontrada"
             ),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+
     })
     public Mono<ResponseEntity<Resena>> obtenerResenaPorId(@PathVariable Long id) {
         log.info("Buscando reseña con ID: {}", id);
@@ -141,32 +132,26 @@ public class ResenaController {
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "201",
-                    description = "Reseña creada y guardada correctamente",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Resena.class,
-                                    example = "{\"id\": 1, \"productoId\": 102, \"usuarioId\": 10, \"comentario\": \"Excelente rendimiento y temperaturas.\", \"calificacion\": 5}"))
+                    description = "Reseña creada correctamente"
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Datos de entrada inválidos o fallas de validación de campos"
+                    description = "Datos inválidos"
             ),
             @ApiResponse(
                     responseCode = "401",
-                    description = "No autenticado, se requiere un token JWT válido en la cabecera"
+                    description = "No autenticado"
             ),
             @ApiResponse(
                     responseCode = "403",
-                    description = "Sin permisos suficientes para comentar"
+                    description = "Sin permisos"
             ),
             @ApiResponse(responseCode = "404", description = "El usuarioId o productoId especificado no existe de forma remota"),
             @ApiResponse(responseCode = "500", description = "Error interno al persistir la reseña")
+
     })
     @PostMapping("/comentar/{productoId}")
-    public Mono<ResponseEntity<Resena>> crearResena(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Payload para la creación de la reseña",
-                    content = @Content(schema = @Schema(implementation = Resena.class,
-                            example = "{\"productoId\": 102, \"usuarioId\": 10, \"comentario\": \"Excelente rendimiento y temperaturas.\", \"calificacion\": 5}")))
-            @Valid @RequestBody Resena item) {
+    public Mono<ResponseEntity<Resena>> crearResena(@Valid @RequestBody Resena item) {
         log.info("Iniciando creación de reseña para productoId: {}", item.getProductoId());
         return Mono.zip(
                         productoClient.obtenerProducto(item.getProductoId()),
@@ -189,5 +174,4 @@ public class ResenaController {
                     return ResponseEntity.status(HttpStatus.CREATED).body(resena);
                 });
     }
-    }
-
+}
