@@ -13,19 +13,14 @@ services:
       - "9093:9093"
     environment:
       SPRING_PROFILES_ACTIVE: docker
-      SERVICES_PRODUCTO_URL: "http://productos:9090/api/v1/productos"
-      SERVICES_INVENTARIO_URL: "http://inventario:9091/api/v1/inventario"
     depends_on:
       - eureka-server
-
-
   comentarios:
     build: ./Comentarios
     container_name: comentarios
     ports:
       - "9097:9097"
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
+
     depends_on:
       - eureka-server
 
@@ -96,10 +91,6 @@ services:
       - "9094:9094"
     environment:
       SPRING_PROFILES_ACTIVE: docker
-      SERVICES_PRODUCTO_URL: "http://productos:9090/api/v1/productos"
-      SERVICES_INVENTARIO_URL: "http://inventario:9091/api/v1/inventario"
-      SERVICES_USUARIO_URL: "http://ms-auth:9092/api/v1/auth"
-      SERVICES_CARRITO_URL: "http://carrito:9093/api/v1/carrito"
     depends_on:
       - eureka-server
 
@@ -110,8 +101,6 @@ services:
       - "9099:9099"
     environment:
       SPRING_PROFILES_ACTIVE: docker
-      SERVICES_PRODUCTO_URL: "http://productos:9090/api/v1/productos"
-      SERVICES_USUARIO_URL: "http://ms-auth:9092/api/v1/auth"
     depends_on:
       - eureka-server
 
