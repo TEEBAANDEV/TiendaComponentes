@@ -5,8 +5,6 @@ import com.example.recibo.model.Recibo;
 import com.example.recibo.model.VentaDTO;
 import com.example.recibo.service.ReciboService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -39,12 +37,9 @@ public class ReciboController {
 
     @Operation(summary = "Generar un nuevo recibo", description = "Genera y guarda un recibo a partir del detalle de una venta")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Recibo generado exitosamente",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Recibo.class,
-                                    example = "{\"idRecibo\": 45, \"idVenta\": 101, \"idUsuario\": 10, \"nombreProducto\": \"1x Teclado Mecánico (RGB Switch Azul)\", \"montoTotal\": 25990.0, \"metodoPago\": \"TARJETA\", \"fechaEmision\": \"2026-07-12T15:15:00\"}"))),
+            @ApiResponse(responseCode = "201", description = "Recibo generado exitosamente"),
             @ApiResponse(responseCode = "400", description = "ID de venta con formato erróneo"),
-            @ApiResponse(responseCode = "404", description = "Venta no encontrada en el microservicio remoto o error al generar el recibo"),
+            @ApiResponse(responseCode = "404", description = "Venta no encontrada o error al generar recibo"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor al procesar la glosa o la persistencia")
     })
     @PostMapping("/generar/{idVenta}")
@@ -99,10 +94,9 @@ public class ReciboController {
 
     @Operation(summary = "Listar todos los recibos", description = "Retorna una lista reactiva (Flux) de todos los recibos registrados")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Operación exitosa, listado de recibos recuperado",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Recibo.class))),
+            @ApiResponse(responseCode = "200", description = "Operación exitosa"),
             @ApiResponse(responseCode = "500", description = "Error interno al recuperar los datos globales")
+
     })
     @GetMapping
     public ResponseEntity<List<Recibo>> listarRecibos() {
@@ -124,14 +118,11 @@ public class ReciboController {
 
     @Operation(summary = "Obtener un recibo por su ID", description = "Busca un recibo específico mediante su identificador único")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Recibo localizado exitosamente",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Recibo.class,
-                                    example = "{\"idRecibo\": 45, \"idVenta\": 101, \"idUsuario\": 10, \"nombreProducto\": \"1x Teclado Mecánico (RGB Switch Azul)\", \"montoTotal\": 25990.0, \"metodoPago\": \"TARJETA\", \"fechaEmision\": \"2026-07-12T15:15:00\"}"))),
+            @ApiResponse(responseCode = "200", description = "Recibo encontrado"),
             @ApiResponse(responseCode = "400", description = "El ID del recibo ingresado no es válido"),
-            @ApiResponse(responseCode = "404", description = "El ID del recibo solicitado no existe en los registros"),
+            @ApiResponse(responseCode = "404", description = "Recibo no encontrado"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
-    })
+   })
     @GetMapping("/{idRecibo}")
     public ResponseEntity<Optional<Recibo>> obtenerPorId(@PathVariable Long idRecibo) {
 

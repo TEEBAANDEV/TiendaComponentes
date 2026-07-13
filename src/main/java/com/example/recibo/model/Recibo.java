@@ -23,27 +23,27 @@ public class Recibo extends RepresentationModel<Recibo> {
     @Column(name = "idRecibo")
     @Schema(description = "ID único del recibo", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Long idRecibo;
-    
+
     @Column(name = "idVenta")
     @Schema(description = "ID de la venta asociada", example = "10")
     private Long idVenta;
-    
+
     @Column(name = "idUsuario")
     @Schema(description = "ID del usuario comprador", example = "5")
     private Long idUsuario;
-    
+
     @Column(name = "nombreProducto")
     @Schema(description = "Detalle o glosa de los productos", example = "2x Memoria RAM (Corsair) | 1x SSD (Samsung)")
     private String nombreProducto;
-    
+
     @Column(name = "montoTotal")
     @Schema(description = "Monto total pagado", example = "150.0")
     private Double montoTotal;
-    
+
     @Column(name = "metodoPago")
     @Schema(description = "Método de pago utilizado", example = "TARJETA")
     private String metodoPago;
-    
+
     @Column(name = "fechaEmision")
     @Schema(description = "Fecha de emisión del recibo")
     private LocalDateTime fechaEmision;
