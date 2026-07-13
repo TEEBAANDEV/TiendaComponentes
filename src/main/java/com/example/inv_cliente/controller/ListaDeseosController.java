@@ -5,8 +5,6 @@ import com.example.inv_cliente.client.UsuarioClient;
 import com.example.inv_cliente.model.ListaDeseados;
 import com.example.inv_cliente.model.Producto;
 import com.example.inv_cliente.service.ListaDeseosService;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,8 +32,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Tag(name = "Controlador de Lista de Deseos", description = "Endpoints para gestionar la lista de deseos de los usuarios")
 public class ListaDeseosController {
 
-    private final ListaDeseosService service;
+    private final ProductoClient productoClient;
 
+    @Autowired
+    private final ListaDeseosService service;
+    @Autowired
+    private final UsuarioClient usuarioClient;
 
     private Mono<ListaDeseados> addLinks(ListaDeseados item) {
         try {
@@ -51,32 +53,34 @@ public class ListaDeseosController {
     @PostMapping("/agregar")
     @Operation(summary = "Agregar items a la lista de deseos", description = "Permite agregar una lista de items a la lista de deseos de un usuario")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Items creados y agregados exitosamente",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ListaDeseados.class,
-                                    example = "[{\"id\": 1, \"idUsuario\": 10, \"idProducto\": 102, \"nombreProducto\": \"Mouse Gamer Wireless\"}]"))),
-            @ApiResponse(responseCode = "400", description = "Estructura de entrada o datos de validación incorrectos"),
-            @ApiResponse(responseCode = "404", description = "El ID de usuario o de producto no fue encontrado en los microservicios externos"),
-            @ApiResponse(responseCode = "500", description = "Error interno al procesar la inserción en la lista")
+    @ApiResponse(responseCode = "201", description = "Items creados y agregados exitosamente"),
+    @ApiResponse(responseCode = "400", description = "Estructura de entrada o datos de validación incorrectos"),
+    @ApiResponse(responseCode = "404", description = "El ID de usuario o de producto no fue encontrado en los microservicios externos"),
+    @ApiResponse(responseCode = "500", description = "Error interno al procesar la inserción en la lista")
     })
     @ResponseStatus(HttpStatus.CREATED)
-    public Flux<ListaDeseados> agregarItems(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Lista de deseos a registrar",
-                    content = @Content(schema = @Schema(implementation = ListaDeseados.class,
-                            example = "[{\"idUsuario\": 10, \"idProducto\": 102, \"nombreProducto\": \"Mouse Gamer Wireless\"}]")))
-            @Valid @RequestBody List<ListaDeseados> items){
+    public Flux<ListaDeseados> agregarItems(@Valid @RequestBody List<ListaDeseados> items){
         log.info("Agregando {} items a la lista de deseos", items.size());
         return Flux.fromIterable(items)
-                .flatMap(service::RegistrarItem)
-                .flatMap(this::addLinks);
+                .flatMap(item ->
+                        Mono.zip(
+                                productoClient.obtenerProducto(item.getIdProducto()),
+                                usuarioClient.obtenerUsuario(item.getIdUsuario())
+                        ).flatMap(tuple2 -> {
+                            Producto producto = tuple2.getT1();
+                            item.setNombreProducto(producto.getNombre());
+                            item.setDescripcionProducto(producto.getDescripcion());
+                            return Mono.fromCallable(() -> service.agregarALista(item))
+                                    .subscribeOn(reactor.core.scheduler.Schedulers.boundedElastic());
+                        })
+                ).flatMap(this::addLinks);
     }
+
     @GetMapping
     @Operation(summary = "Listar todos los elementos de la lista de deseos", description = "Retorna todos los registros de la lista de deseos globales")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Operación realizada con éxito",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ListaDeseados.class))),
-            @ApiResponse(responseCode = "500", description = "Error interno al recuperar el listado global")
+    @ApiResponse(responseCode = "200", description = "Operación realizada con éxito"),
+    @ApiResponse(responseCode = "500", description = "Error interno al recuperar el listado global")
     })
     public Flux<ListaDeseados> listar(){
         log.info("Solicitando listado global de todos los deseos");
@@ -89,12 +93,9 @@ public class ListaDeseosController {
     @GetMapping("/usuario/{idUsuario}")
     @Operation(summary = "Ver lista de deseos por usuario", description = "Retorna todos los items de la lista de deseos correspondientes a un usuario")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Operación realizada con éxito",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ListaDeseados.class,
-                                    example = "[{\"id\": 1, \"idUsuario\": 10, \"idProducto\": 102, \"nombreProducto\": \"Mouse Gamer Wireless\"}]"))),
-            @ApiResponse(responseCode = "404", description = "El usuario especificado no existe o no posee elementos en su lista"),
-            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    @ApiResponse(responseCode = "200", description = "Operación realizada con éxito"),
+    @ApiResponse(responseCode = "404", description = "El usuario especificado no existe o no posee elementos en su lista"),
+    @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     public Flux<ListaDeseados> verLista(@PathVariable Long idUsuario){
         log.info("Obteniendo lista de deseos para el usuario: {}", idUsuario);
@@ -107,11 +108,11 @@ public class ListaDeseosController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar un item de la lista de deseos", description = "Permite eliminar un único item por su ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Item eliminado con éxito (Sin Contenido)"),
-            @ApiResponse(responseCode = "404", description = "El ID del item de deseos no fue localizado"),
-            @ApiResponse(responseCode = "500", description = "Error interno al eliminar el elemento")
+    @ApiResponse(responseCode = "204", description = "Item eliminado con éxito"),
+    @ApiResponse(responseCode = "404", description = "El ID del item de deseos no fue localizado"),
+    @ApiResponse(responseCode = "500", description = "Error interno al eliminar el elemento")
     })
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+            @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> eliminarItem(@PathVariable Long id){
         log.info("Eliminando item de la lista con ID: {}", id);
         return Mono.fromRunnable(() -> service.eliminarDeLista(id))
@@ -122,9 +123,9 @@ public class ListaDeseosController {
     @DeleteMapping("/usuario/{idUsuario}")
     @Operation(summary = "Vaciar la lista de deseos de un usuario", description = "Elimina todos los elementos asociados a un ID de usuario")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Lista vaciada con éxito (Sin Contenido)"),
-            @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
-            @ApiResponse(responseCode = "500", description = "Error interno al vaciar la lista")
+    @ApiResponse(responseCode = "204", description = "Lista vaciada con éxito"),
+    @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
+    @ApiResponse(responseCode = "500", description = "Error interno al vaciar la lista")
     })
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> vaciarLista(@PathVariable Long idUsuario){
