@@ -3,8 +3,6 @@ package com.example.ms_users.controller;
 import com.example.ms_users.model.User;
 import com.example.ms_users.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,15 +26,12 @@ public class UserController {
 
     @Operation(summary = "Obtener un usuario por su ID único", description = "Proporciona información detallada del usuario junto con enlaces HATEOAS.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuario obtenido exitosamente",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = User.class,
-                                    example = "{\"id\": 10, \"nombre\": \"Isa\", \"email\": \"isa@example.cl\", \"rol\": \"CLIENTE\"}"))),
+            @ApiResponse(responseCode = "200", description = "Usuario obtenido exitosamente"),
             @ApiResponse(responseCode = "400", description = "Formato de ID proporcionado inválido"),
-            @ApiResponse(responseCode = "404", description = "Usuario no encontrado en los registros"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor al procesar la consulta")
     })
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id){
         log.info("Fetching user with ID: {}", id);
         return userService.findById(id)
